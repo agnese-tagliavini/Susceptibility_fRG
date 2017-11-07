@@ -232,24 +232,24 @@ dcomplex rhs_t::eval_diag_suscept_trip( const idx_suscept_t& idx, const state_t&
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-	       	       {
-	       		val += 0.25/BETA/BETA * // Two pairs of equivalent lines -> Factor 1/4
-			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_t( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-			    weight_vec_2d[w][wp];
-	       	       }
+//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+//	       	       {
+//	       		val += 0.5/BETA/BETA/4.0/PI/PI	* // Two pairs of equivalent lines -> Factor 1/4
+//			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+//			    state_vec.vertx_t( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+//	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+//			    weight_vec_2d[w][wp];
+//	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
-      val += 0.5/BETA *	//Two equivalent lines -> factor 1/2
+      val += 1.0/BETA *	//Two equivalent lines -> factor 1/2
 	 bubble_pp[W][w][n_in][n_out][s2_out][s2_in][s1_out][s1_in](K) *
 	 weight_vec[w];
    }
@@ -274,24 +274,24 @@ dcomplex rhs_t::eval_diag_suscept_s( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-	       	       {
-	       		val += 0.25/BETA/BETA * // Two pairs of equivalent lines -> Factor 1/4
-			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-			    weight_vec_2d[w][wp];
-	       	       }
+//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+//	       	       {
+//	       		val += 0.5/BETA/BETA/4.0/PI/PI	 * // Two pairs of equivalent lines -> Factor 1/4
+//			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+//			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+//	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+//			    weight_vec_2d[w][wp];
+//	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
-      val += 0.5/BETA * // Two equivalent lines -> factor 1/2
+      val += 1.0/BETA * // Two equivalent lines -> factor 1/2
 	 bubble_pp[W][w][n_in][n_out][s2_out][s2_in][s1_out][s1_in](K) *
 	 weight_vec[w];
    }
@@ -316,22 +316,22 @@ dcomplex rhs_t::eval_diag_suscept_d( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-	       	       {
-			//cout << "sum" << endl;  
-	       		val += 1.0/BETA/BETA * //Two internal loops
-			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_d( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-			    weight_vec_2d[w][wp];
-	       	       }
+//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+//	       	       {
+//			//cout << "sum" << endl;  
+//	       		val += 1.0/BETA/BETA/4.0/PI/PI	 * //Two internal loops
+//			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+//			    state_vec.vertx_d( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+//	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+//			    weight_vec_2d[w][wp];
+//	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val -= 1/BETA * // One internal loop
@@ -359,21 +359,21 @@ dcomplex rhs_t::eval_diag_suscept_m( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-	       	       {
-	       		val += 1.0/BETA/BETA *
-			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_m( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-			    weight_vec_2d[w][wp];
-	       	       }
+//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+//	       	       {
+//	       		val += 1.0/BETA/BETA/4.0/PI/PI *
+//			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+//			    state_vec.vertx_m( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+//	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+//			    weight_vec_2d[w][wp];
+//	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val -= 1/BETA * // One internal loop

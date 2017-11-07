@@ -179,22 +179,22 @@ class K_Grid : public std::vector<std::tuple<double, double>>
 #ifdef UNIFORM_GRID
 inline int add_k( int k1, int k2, int bf[2] )
 {
-   bf[0] = abs(K_Grid::add_k_bfx_matrix[k1][k2])%2;
-   bf[1] = abs(K_Grid::add_k_bfy_matrix[k1][k2])%2;
+   bf[0] = int(abs(K_Grid::add_k_bfx_matrix[k1][k2]))%2;
+   bf[1] = int(abs(K_Grid::add_k_bfy_matrix[k1][k2]))%2;
    return K_Grid::add_k_matrix[k1][k2]; 
 }
 
 inline int dif_k( int k1, int k2, int bf[2] )
 {
-   bf[0] = abs(K_Grid::dif_k_bfx_matrix[k1][k2])%2;
-   bf[1] = abs(K_Grid::dif_k_bfy_matrix[k1][k2])%2;
+   bf[0] = int(abs(K_Grid::dif_k_bfx_matrix[k1][k2]))%2;
+   bf[1] = int(abs(K_Grid::dif_k_bfy_matrix[k1][k2]))%2;
    return K_Grid::dif_k_matrix[k1][k2];
 }
 
 inline int neg_k( int k, int bf[2])
 {
-   bf[0]= abs(K_Grid::dif_k_bfx_matrix[K_Grid::patch_origin][k])%2 ;
-   bf[1]= abs(K_Grid::dif_k_bfy_matrix[K_Grid::patch_origin][k])%2 ;
+   bf[0]= int(abs(K_Grid::dif_k_bfx_matrix[K_Grid::patch_origin][k]))%2 ;
+   bf[1]= int(abs(K_Grid::dif_k_bfy_matrix[K_Grid::patch_origin][k]))%2 ;
    return K_Grid::dif_k_matrix[K_Grid::patch_origin][k];
 }
 

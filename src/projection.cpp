@@ -154,7 +154,7 @@ dcomplex generate_proj_vert_bare(const idx_vert_bare_ff_t& idx )
    int s2_out = idx(5);
 
    if( n_in==0 && n_out==0)
-      return vert_bare(s1_in,s2_in,s1_out,s2_out);
+      return 4.0 * PI * PI * vert_bare(s1_in,s2_in,s1_out,s2_out);
    else
       return dcomplex(0.0,0.0);
 }

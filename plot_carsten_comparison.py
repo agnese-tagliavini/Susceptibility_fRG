@@ -13,8 +13,6 @@ import math
 
 #--------------------------------------SETTINGS ------------------------------------------
 #if -1, change overall vertex sign (switch definition)
-vert_mul = 1
-
 #--------------------------------------MANAGING FILES ------------------------------------------
 
 def run(command):
@@ -24,13 +22,24 @@ def run(command):
 most_recently_edited = run("ls -Art dat/ | tail -n 1")
 
 
-fname1 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta1_PFCB16_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
-fname2 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta2_PFCB16_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
-fname4 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta4_PFCB16_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
-fname4p5 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta4p5_PFCB16_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"  
-fname5 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta5_PFCB16_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"  
-#fname = "dat/" + most_recently_edited
+fname1 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta1_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
+fname2 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta2_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
+fname4 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta4_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
+fname4p5 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta4p5_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
+fname5 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta5_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5"  
 
+#fname1 = "dat/carsten_comparison/U2/suscept/suscept_U2_TP0_Beta1_PFCB128_HUB_SU2_2D_4PISYMM_mkp4_allsymm_withSE.h5"  
+#fname2 = "dat/carsten_comparison/U2/suscept/suscept_U2_TP0_Beta2_PFCB128_HUB_SU2_2D_4PISYMM_mkp4_allsymm_withSE.h5"  
+#fname4 = "dat/carsten_comparison/U2/suscept/suscept_U2_TP0_Beta4_PFCB128_HUB_SU2_2D_4PISYMM_mkp4_allsymm_withSE.h5"  
+#fname4p5 = "dat/carsten_comparison/U2/suscept/suscept_U2_TP0_Beta4p5_PFCB128_HUB_SU2_2D_4PISYMM_mkp4_allsymm_withSE.h5"  
+#fname5 = "dat/carsten_comparison/U2/suscept/suscept_U2_Beta5_PFCB128_HUB_SU2_2D_4PISYMM_mkp4_allsymm_withSE.h5"  
+#fname = "dat/" + most_recently_edited
+#fname1 = "dat/suscept_U2_Beta1_PFCB128_HUB_SU2_2D_bare.h5"  
+#fname2 = "dat/suscept_U2_Beta2_PFCB128_HUB_SU2_2D_bare.h5"  
+#fname4 = "dat/suscept_U2_Beta4_PFCB128_HUB_SU2_2D_bare.h5"  
+#fname4p5 = "dat/suscept_U2_Beta4p5_PFCB128_HUB_SU2_2D_bare.h5"  
+#fname5 = "dat/suscept_U2_Beta5_PFCB128_HUB_SU2_2D_bare.h5"  
+#suscept_U2_Beta1_PFCB128_HUB_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5
 if len(sys.argv) > 1:
     fname1 = str(sys.argv[1])
 if len(sys.argv) > 1:
@@ -55,7 +64,7 @@ fname4p5 = fname4p5.rstrip('\n') # strip newline of fname
 f4p5 = h5py.File(fname4p5, "r")
 
 fname5 = fname5.rstrip('\n') # strip newline of fname
-f5 = h5py.File(fname4p5, "r")
+f5 = h5py.File(fname5, "r")
 
 os.system('mkdir -p log')
 os.system('mkdir -p plots')
@@ -105,15 +114,26 @@ MAX_KPOS = 4
 PATCH_COUNT=4*MAX_KPOS*MAX_KPOS
 
 pi = math.pi
+
+#vert_mul = 1.0/4.0/pi/pi
+vert_mul = 1.0
+prefact = 1.0
 #--------------------------------------GENERAL PLOT SETTINGS------------------------------------------
 
-pl.rc('xtick', labelsize=9) 
-pl.rc('ytick', labelsize=9) 
-#pl.rc('text', usetex=True)
-#pl.rc('text.latex', preamble='\usepackage{amsmath}')
+pl.rc('xtick', labelsize=10) 
+pl.rc('ytick', labelsize=10) 
+pl.rc('text', usetex=True)
+pl.rc('text.latex', preamble='\usepackage{amsmath}')
 
 RE = r"$\operatorname{Re}"
 IM = r"$\operatorname{Im}"
+
+def cm2inch(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i/inch for i in tupl[0])
+    else:
+        return tuple(i/inch for i in tupl)
 
 #-----------------------CONSTRUCT ALL NECESSARY K-PATCHES, ADDING, SUBSTRACTING AND NEG---------------------
 
@@ -162,7 +182,7 @@ for i in range(PATCH_COUNT):
 #overwrite the add dif and inv in case of simple patch (only way to get patch_count=16)
 
 def Form_factor(n, k):
-    form_factor_arr = np.array([1//math.sqrt(4*pi*pi), 
+    form_factor_arr = np.array([1/math.sqrt(4*pi*pi), 
                                 1/math.sqrt(2*pi*pi) * math.cos(pi/MAX_KPOS*get_xindices(k)),
                                 1/math.sqrt(2*pi*pi) * math.cos(pi/MAX_KPOS*get_yindices(k)),
                                 1/math.sqrt(2*pi*pi) * math.sin(pi/MAX_KPOS*get_xindices(k)),
@@ -252,7 +272,7 @@ ffactor_count4p5  = rechi_t4p5.shape[2]
 
 #BETA=5
 
-bosgrid5 = np.array(f4p5["/suscept_func/bgrid"])
+bosgrid5 = np.array(f5["/suscept_func/bgrid"])
 rechi_t5 = vert_mul * np.array(f5["/suscept_func/RE_TRIPLET"])
 imchi_t5 = vert_mul * np.array(f5["/suscept_func/IM_TRIPLET"])
 rechi_s5 = vert_mul * np.array(f5["/suscept_func/RE_SINGLET"])
@@ -278,6 +298,7 @@ omega1 = omega + (fdim_bos1 - 1)/2
 omega2 = omega + (fdim_bos2 - 1)/2 
 omega4 = omega + (fdim_bos4 - 1)/2 
 
+print omega2, omega4
 
 #q = (0,0)
 
@@ -390,60 +411,93 @@ imchim_py = np.array([imchi_m5[omega4, q, FF1, FF2, 0, 0, 0, 0],imchi_m4p5[omega
 
 beta_array = np.array([1./BETA5,1./BETA4p5,1./BETA4,1./BETA2, 1./BETA1])
 
+
 #--- Helper functions
 
-def plotchi( use_pl, arrs, arrss, arrd, arrpx, arrpy):
+def plotchi( use_pl, arrs, arrss, arrd, arrpx, arrpy, legend):
     pl.plot( beta_array, arrs, "bx", label = "$s$")
     pl.plot( beta_array, arrss,"ro", label = "$s^{*}$")
     pl.plot( beta_array, arrd, "gs", label = "$d_{x^2-y^2}$")
     pl.plot( beta_array, arrpx,"m^", label = "$p_{x}$")
     pl.plot( beta_array, arrpy,"kv", label = "$p_{y}$")
     pl.xlim([0.0, 1.5])
-    pl.legend(loc=1, prop={'size':6})
+    if(legend):
+        pl.legend(loc=1, prop={'size':6})
+    
     return
 
 
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,0)$" )
 
-plotchi( pl.subplot(2,2,1), rechit_s, rechit_ss, rechit_d, rechit_px, rechit_py) 
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
+
+#pl.subplots_adjust( wspace=0.6, hspace=15)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega_n=$" + str(omega)+ r"             $q = (0,0)$" )
+
+plotchi( pl.subplot(2,2,1), rechit_s, rechit_ss, rechit_d, rechit_px, rechit_py, False) 
 pl.ylabel(RE + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), rechis_s, rechis_ss, rechis_d, rechis_px, rechis_py) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), rechis_s, rechis_ss, rechis_d, rechis_px, rechis_py, True) 
 pl.ylabel(RE + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), rechid_s, rechid_ss, rechid_d, rechid_px, rechid_py) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), rechid_s, rechid_ss, rechid_d, rechid_px, rechid_py, False) 
 pl.ylabel(RE + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), rechim_s, rechim_ss, rechim_d, rechim_px, rechim_py) 
+plotchi( pl.subplot(2,2,4), rechim_s, rechim_ss, rechim_d, rechim_px, rechim_py, False) 
 pl.ylabel(RE + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 #pl.tight_layout()
 
-pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(0,0).png", dpi=150)
+pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(0,0)_noSE.png", dpi=150)
+pl.figure(dpi=100) # Reset dpi to default
+pl.clf()
+
+# RE PLOT FOR POSTER! Density, Magnetic, SC = 1/2(s+t)
+
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+
+fig = pl.figure(figsize=cm2inch(18.0,6.0))
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,0)$" )
+
+plotchi( pl.subplot(1,3,1), 0.5*(rechit_s+rechis_s), 0.5*(rechit_ss+rechis_ss),0.5*(rechit_d+rechis_d), 0.5*(rechit_px+rechis_px), 0.5*(rechit_py+ rechis_py), False) 
+pl.subplots_adjust( wspace=0.4, hspace=0.4)
+pl.ylabel(RE + r"\chi^{SC}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,2), rechid_s, rechid_ss, rechid_d, rechid_px, rechid_py, False) 
+pl.ylabel(RE + r"\chi^{d}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,3), rechim_s, rechim_ss, rechim_d, rechim_px, rechim_py, True) 
+pl.ylabel(RE + r"\chi^{m}$")
+pl.xlabel(r"$T/t$") 
+pl.tight_layout()
+
+
+pl.savefig("plots/suscept_poster_re_Om="+str(omega)+"_q=(0,0)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
 #IM
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,0)$" )
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,0)$" )
 
-plotchi( pl.subplot(2,2,1), imchit_s, imchit_ss, imchit_d, imchit_px, imchit_py) 
+plotchi( pl.subplot(2,2,1), imchit_s, imchit_ss, imchit_d, imchit_px, imchit_py, False) 
 pl.ylabel(IM + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), imchis_s, imchis_ss, imchis_d, imchis_px, imchis_py) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), imchis_s, imchis_ss, imchis_d, imchis_px, imchis_py, True) 
 pl.ylabel(IM + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), imchid_s, imchid_ss, imchid_d, imchid_px, imchid_py) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), imchid_s, imchid_ss, imchid_d, imchid_px, imchid_py, False) 
 pl.ylabel(IM + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), imchim_s, imchim_ss, imchim_d, imchim_px, imchim_py) 
+plotchi( pl.subplot(2,2,4), imchim_s, imchim_ss, imchim_d, imchim_px, imchim_py, False) 
 pl.ylabel(IM + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 
-pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(0,0).png", dpi=150)
+pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(0,0)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 #====================================================================================
@@ -567,57 +621,82 @@ beta_array = np.array([1./BETA5, 1./BETA4p5,1./BETA4,1./BETA2, 1./BETA1])
 
 #--- Helper functions
 
-def plotchi( use_pl, arrs, arrcx, arrcy, arrps, arrpa):
+def plotchi( use_pl, arrs, arrcx, arrcy, arrps, arrpa, legend):
     pl.plot( beta_array, arrs, "bx", label = "$s$")
     pl.plot( beta_array, arrcx,"ro", label = "$cos(kx)$")
     pl.plot( beta_array, arrcy,"gs", label = "$cos(ky)}$")
     pl.plot( beta_array, arrps,"m^", label = "$p_{x}+p_y$")
     pl.plot( beta_array, arrpa,"kv", label = "$p_{x}-p_y$")
     pl.xlim([0.0, 1.5])
-    pl.legend(loc=1, prop={'size':6})
+    if(legend):
+        pl.legend(loc=1, prop={'size':6})
+    
     return
 
 
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (\pi,\pi)$" )
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (\pi,\pi)$" )
 
-plotchi( pl.subplot(2,2,1), rechit_s, rechit_cx, rechit_cy, rechit_ps, rechit_pa) 
+plotchi( pl.subplot(2,2,1), rechit_s, rechit_cx, rechit_cy, rechit_ps, rechit_pa, False) 
 pl.ylabel(RE + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), rechis_s, rechis_cx, rechis_cy, rechis_ps, rechis_pa) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), rechis_s, rechis_cx, rechis_cy, rechis_ps, rechis_pa, True) 
 pl.ylabel(RE + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), rechid_s, rechid_cx, rechid_cy, rechid_ps, rechid_pa) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), rechid_s, rechid_cx, rechid_cy, rechid_ps, rechid_pa, False) 
 pl.ylabel(RE + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), rechim_s, rechim_cx, rechim_cy, rechim_ps, rechim_pa) 
+plotchi( pl.subplot(2,2,4), rechim_s, rechim_cx, rechim_cy, rechim_ps, rechim_pa, False) 
 pl.ylabel(RE + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 
-pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(pi,pi).png", dpi=150)
+pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(pi,pi)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
+# RE PLOT POSTER!
+fig = pl.figure(figsize=cm2inch(18.0,6.0))
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (\pi,\pi)$" )
+
+plotchi( pl.subplot(1,3,1), 0.5*(rechit_s+rechis_s), 0.5*(rechit_cx+rechis_cx), 0.5*(rechit_cy+ rechis_cy), 0.5*(rechit_ps+rechis_ps), 0.5*(rechit_pa+rechis_pa), False) 
+pl.ylabel(RE + r"\chi^{SC}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,2), rechid_s, rechid_cx, rechid_cy, rechid_ps, rechid_pa, False) 
+pl.ylabel(RE + r"\chi^{d}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,3), rechim_s, rechim_cx, rechim_cy, rechim_ps, rechim_pa, True) 
+pl.ylabel(RE + r"\chi^{m}$")
+pl.xlabel(r"$T/t$") 
+pl.tight_layout()
+
+pl.savefig("plots/suscept_poster_re_Om="+str(omega)+"_q=(pi,pi)_noSE.png", dpi=150)
+pl.figure(dpi=100) # Reset dpi to default
+pl.clf()
 #IM
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (\pi,\pi)$" )
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (\pi,\pi)$" )
 
-plotchi( pl.subplot(2,2,1), imchit_s, imchit_cx, imchit_cy, imchit_ps, imchit_pa) 
+plotchi( pl.subplot(2,2,1), imchit_s, imchit_cx, imchit_cy, imchit_ps, imchit_pa, False) 
 pl.ylabel(IM + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), imchis_s, imchis_cx, imchis_cy, imchis_ps, imchis_pa) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), imchis_s, imchis_cx, imchis_cy, imchis_ps, imchis_pa, True) 
 pl.ylabel(IM + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), imchid_s, imchid_cx, imchid_cy, imchid_ps, imchid_pa) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), imchid_s, imchid_cx, imchid_cy, imchid_ps, imchid_pa, False) 
 pl.ylabel(IM + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), imchim_s, imchim_cx, imchim_cy, imchim_ps, imchim_pa) 
+plotchi( pl.subplot(2,2,4), imchim_s, imchim_cx, imchim_cy, imchim_ps, imchim_pa, False) 
 pl.ylabel(IM + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 
-pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(pi,pi).png", dpi=150)
+pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(pi,pi)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
@@ -746,57 +825,82 @@ beta_array = np.array([1./BETA5, 1./BETA4p5,1./BETA4,1./BETA2, 1./BETA1])
 
 #--- Helper functions
 
-def plotchi( use_pl, arrs, arrcx, arrcy, arrsx, arrsy):
+def plotchi( use_pl, arrs, arrcx, arrcy, arrsx, arrsy, legend):
     pl.plot( beta_array, arrs, "bx", label = "$s$")
     pl.plot( beta_array, arrcx,"ro", label = "$\cos(k_x)$")
     pl.plot( beta_array, arrcy,"gs", label = "$\cos(k_y)}$")
     pl.plot( beta_array, arrsx,"m^", label = "$\sin(k_x)$")
     pl.plot( beta_array, arrsy,"kv", label = "$\sin(k_y)$")
     pl.xlim([0.0, 1.5])
-    pl.legend(loc=1, prop={'size':6})
+    if(legend):
+        pl.legend(loc=1, prop={'size':6})
+    
     return
 
 
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,\pi)$" )
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,\pi)$" )
 
-plotchi( pl.subplot(2,2,1), rechit_s, rechit_cx, rechit_cy, rechit_sx, rechit_sy) 
+plotchi( pl.subplot(2,2,1), rechit_s, rechit_cx, rechit_cy, rechit_sx, rechit_sy, False) 
 pl.ylabel(RE + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), rechis_s, rechis_cx, rechis_cy, rechis_sx, rechis_sy) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), rechis_s, rechis_cx, rechis_cy, rechis_sx, rechis_sy, True) 
 pl.ylabel(RE + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), rechid_s, rechid_cx, rechid_cy, rechid_sx, rechid_sy) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), rechid_s, rechid_cx, rechid_cy, rechid_sx, rechid_sy, False) 
 pl.ylabel(RE + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), rechim_s, rechim_cx, rechim_cy, rechim_sx, rechim_sy) 
+plotchi( pl.subplot(2,2,4), rechim_s, rechim_cx, rechim_cy, rechim_sx, rechim_sy, False) 
 pl.ylabel(RE + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 
-pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(0,pi).png", dpi=150)
+pl.savefig("plots/suscept_re_Om="+str(omega)+"_q=(0,pi)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
+# PLOT RE POSTER!
+fig = pl.figure(figsize=cm2inch(18.0,6.0))
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,\pi)$" )
+
+plotchi( pl.subplot(1,3,1), 0.5*(rechit_s+rechis_s), 0.5*(rechit_cx+rechis_cx), 0.5*(rechit_cy+rechis_cy), 0.5*(rechit_sx+rechis_sx), 0.5*(rechit_sy+rechis_sy), False) 
+pl.ylabel(RE + r"\chi^{t}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,2), rechid_s, rechid_cx, rechid_cy, rechid_sx, rechid_sy, False) 
+pl.ylabel(RE + r"\chi^{d}$")
+pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(1,3,3), rechim_s, rechim_cx, rechim_cy, rechim_sx, rechim_sy, True) 
+pl.ylabel(RE + r"\chi^{m}$")
+pl.xlabel(r"$T/t$") 
+pl.tight_layout()
+
+pl.savefig("plots/suscept_poster_re_Om="+str(omega)+"_q=(0,pi)_noSE.png", dpi=150)
+pl.figure(dpi=100) # Reset dpi to default
+pl.clf()
 #IM
 
-pl.subplots_adjust( wspace=0.4, hspace=0.4)
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,\pi)$" )
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
+#pl.subplots_adjust( wspace=0.4, hspace=0.4)
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\Omega=$" + str(omega)+ r"     $q = (0,\pi)$" )
 
-plotchi( pl.subplot(2,2,1), imchit_s, imchit_cx, imchit_cy, imchit_sx, imchit_sy) 
+plotchi( pl.subplot(2,2,1), imchit_s, imchit_cx, imchit_cy, imchit_sx, imchit_sy, False) 
 pl.ylabel(IM + r"\chi^{t}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,2), imchis_s, imchis_cx, imchis_cy, imchis_sx, imchis_sy) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,2), imchis_s, imchis_cx, imchis_cy, imchis_sx, imchis_sy, True) 
 pl.ylabel(IM + r"\chi^{s}$")
-pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,3), imchid_s, imchid_cx, imchid_cy, imchid_sx, imchid_sy) 
+#pl.xlabel(r"$T/t$") 
+plotchi( pl.subplot(2,2,3), imchid_s, imchid_cx, imchid_cy, imchid_sx, imchid_sy, False) 
 pl.ylabel(IM + r"\chi^{d}$")
 pl.xlabel(r"$T/t$") 
-plotchi( pl.subplot(2,2,4), imchim_s, imchim_cx, imchim_cy, imchim_sx, imchim_sy) 
+plotchi( pl.subplot(2,2,4), imchim_s, imchim_cx, imchim_cy, imchim_sx, imchim_sy, False) 
 pl.ylabel(IM + r"\chi^{m}$")
 pl.xlabel(r"$T/t$") 
+pl.tight_layout()
 
-pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(0,pi).png", dpi=150)
+pl.savefig("plots/suscept_im_Om="+str(omega)+"_q=(0,pi)_noSE.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
@@ -809,9 +913,10 @@ pl.clf()
 #===============================================================================================================
 
 
-fname2 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta2_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"  
-fname4 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"  
-fname4p5 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4p5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"  
+fname2 = "dat/carsten_comparison/U2/PREPROC/dat_U2_TP0_Beta2_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm.h5"  
+fname4 = "dat/carsten_comparison/U2/PREPROC/dat_U2_TP0_Beta4_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm.h5"  
+fname4p5 = "dat/carsten_comparison/U2/PREPROC/dat_U2_TP0_Beta4p5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm.h5"  
+fname5 = "dat/carsten_comparison/U2/PREPROC/dat_U2_TP0_Beta5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm.h5"  
 
 
 if len(sys.argv) > 1:
@@ -832,30 +937,41 @@ f4 = h5py.File(fname4, "r")
 fname4p5 = fname4p5.rstrip('\n') # strip newline of fname
 f4p5 = h5py.File(fname4p5, "r")
 
+fname5 = fname5.rstrip('\n') # strip newline of fname
+f5 = h5py.File(fname5, "r")
+
 #--- Read
 #BETA=2
 siggrid2  = f2["/Sig/fgrid"]
-resig2    = f2["/Sig/RE"]
-imsig2    = f2["/Sig/IM"]
+resig2    = prefact * np.array(f2["/Sig/RE"])
+imsig2    = prefact * np.array(f2["/Sig/IM"])
 mom_dim2  = resig2.shape[1]
 fdim2     = resig2.shape[0]
 fdimo22   = fdim2/2
 
 #BETA=4
 siggrid4  = f4["/Sig/fgrid"]
-resig4    = f4["/Sig/RE"]
-imsig4    = f4["/Sig/IM"]
+resig4    = prefact * np.array(f4["/Sig/RE"])
+imsig4    = prefact * np.array(f4["/Sig/IM"])
 mom_dim4  = resig4.shape[1]
 fdim4     = resig4.shape[0]
 fdimo24   = fdim4/2
 
 #BETA=4.5
 siggrid4p5  = f4p5["/Sig/fgrid"]
-resig4p5    = f4p5["/Sig/RE"]
-imsig4p5    = f4p5["/Sig/IM"]
+resig4p5    = prefact * np.array(f4p5["/Sig/RE"])
+imsig4p5    = prefact * np.array(f4p5["/Sig/IM"])
 mom_dim4p5  = resig4p5.shape[1]
 fdim4p5     = resig4p5.shape[0]
 fdimo24p5   = fdim4p5/2
+
+#BETA=5
+siggrid5  = f5["/Sig/fgrid"]
+resig5    = prefact * np.array(f5["/Sig/RE"])
+imsig5    = prefact * np.array(f5["/Sig/IM"])
+mom_dim5  = resig5.shape[1]
+fdim5     = resig5.shape[0]
+fdimo25   = fdim5/2
 
 #==============================================================
 #
@@ -872,29 +988,33 @@ elif PATCH_COUNT==16:
 elif PATCH_COUNT==64:
     q = 27
 
-def plotSig( use_pl, arr1, arr2, arr3, string ):
+def plotSig( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx',  label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go',  label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv',  label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms',  label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
-    pl.legend(loc=2, prop={'size':7})
+    pl.legend(loc=1, prop={'size':6})
     return
 
-def plotSigre( use_pl, arr1, arr2, arr3, string ):
+def plotSigre( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx', label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go', label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv', label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms',  label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
     return
+
+fig = pl.figure(figsize=cm2inch(14.0,8.0))
 
 pl.suptitle(r"$U=$" + str(UINT1) + r"     $q = (0,0)$" )
 
 #--- Plot physical
-plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
+plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], resig5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
-plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
+plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], imsig5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
 pl.tight_layout()
 
@@ -914,29 +1034,32 @@ elif PATCH_COUNT==16:
 elif PATCH_COUNT==64:
     q = 31
 
-def plotSig( use_pl, arr1, arr2, arr3, string ):
+def plotSig( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx',label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go',label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv', label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
-    pl.legend(loc=2, prop={'size':7})
+    pl.legend(loc=1, prop={'size':6})
     return
 
-def plotSigre( use_pl, arr1, arr2, arr3, string ):
+def plotSigre( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx',  label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go',  label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv', label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
     return
 
+fig = pl.figure(figsize=cm2inch(14.0,8.0))
 pl.suptitle(r"$U=$" + str(UINT1) + r"     $q = (0,\pi)$" )
 
 #--- Plot physical
-plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
+plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0],resig5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
-plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
+plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], imsig5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
 
 pl.tight_layout()
@@ -956,29 +1079,32 @@ elif PATCH_COUNT==16:
 elif PATCH_COUNT==64:
     q = 45
 
-def plotSig( use_pl, arr1, arr2, arr3, string ):
+def plotSig( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx', label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go', label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv',  label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
-    pl.legend(loc=2, prop={'size':7})
+    pl.legend(loc=1, prop={'size':6})
     return
 
-def plotSigre( use_pl, arr1, arr2, arr3, string ):
+def plotSigre( use_pl, arr1, arr2, arr3,arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx', label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go', label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv', label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
     return
 
+fig = pl.figure(figsize=cm2inch(14.0,8.0))
 pl.suptitle(r"$U=$" + str(UINT1) + r"     $q = (\pi/2,\pi/2)$" )
 
 #--- Plot physical
-plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
+plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0],resig5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
-plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
+plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], imsig5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
 
 pl.tight_layout()
@@ -998,29 +1124,32 @@ elif PATCH_COUNT==16:
 elif PATCH_COUNT==64:
     q = 63
 
-def plotSig( use_pl, arr1, arr2, arr3, string ):
+def plotSig( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx', label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go', label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv',  label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
-    pl.legend(loc=2, prop={'size':7})
+    pl.legend(loc=1, prop={'size':6})
     return
 
-def plotSigre( use_pl, arr1, arr2, arr3, string ):
+def plotSigre( use_pl, arr1, arr2, arr3, arr4, string ):
     pl.plot( siggrid2, arr1[:], 'bx', label="$beta=2$")
     pl.plot( siggrid4, arr2[:], 'go', label='$beta=4$')
     pl.plot( siggrid4p5, arr3[:], 'rv', label='$beta=4.5$')
+    pl.plot( siggrid5, arr4[:], 'ms', label='$beta=5$')
     pl.xlim([min(siggrid2),max(siggrid2)])
     use_pl.set_title(string)
     return
 
+fig = pl.figure(figsize=cm2inch(14.0,8.0))
 pl.suptitle(r"$U=$" + str(UINT1) + r"     $q = (\pi,\pi)$" )
 
 #--- Plot physical
-plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
+plotSigre( pl.subplot(1,2,1), resig2[:,q,0,0], resig4[:,q,0,0], resig4p5[:,q,0,0], resig5[:,q,0,0], RE + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
-plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
+plotSig( pl.subplot(1,2,2), imsig2[:,q,0,0], imsig4[:,q,0,0], imsig4p5[:,q,0,0], imsig5[:,q,0,0], IM + "\Sigma(i\omega)$" ) 
 pl.xlabel("$\omega$")
 
 pl.tight_layout()
@@ -1039,8 +1168,9 @@ pl.clf()
 #                           WARNING: TOO HIGH TEMPERATURE..FITTING JUST TWO POINTS!!!
 #========================================================================================================
 
-freqset4   = np.array([(2*i+1)*pi/4 for i in range(0,2)])
+freqset4   = np.array([(2*i+1)*pi/4. for i in range(0,2)])
 freqset4p5 = np.array([(2*i+1)*pi/4.5 for i in range(0,2)])
+freqset5 = np.array([(2*i+1)*pi/5. for i in range(0,2)])
 
 #q(0,0)
 if PATCH_COUNT==4:
@@ -1051,10 +1181,12 @@ elif PATCH_COUNT==64:
     q = 27
 
 alpha4_00 = (imsig4[0+fdimo24,q,0,0]-imsig4[1+fdimo24,q,0,0])/(freqset4[0]-freqset4[1])
-alpha4p5_00 = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha4p5_00 = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4p5[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha5_00 = (imsig5[0+fdimo25,q,0,0]-imsig5[1+fdimo25,q,0,0])/(freqset5[0]-freqset5[1])
 
-Z4_00   = 1.0/(alpha4_00+1)
-Z4p5_00 = 1.0/(alpha4p5_00+1)
+Z4_00   = 1.0/(-alpha4_00+1)
+Z4p5_00 = 1.0/(-alpha4p5_00+1)
+Z5_00 = 1.0/(-alpha5_00+1)
 
 
  #q=(0,pi)
@@ -1067,10 +1199,13 @@ elif PATCH_COUNT==64:
     q = 31
 
 alpha4_0pi   = (imsig4[0+fdimo24,q,0,0]-imsig4[1+fdimo24,q,0,0])/(freqset4[0]-freqset4[1])
-alpha4p5_0pi = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha4p5_0pi = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4p5[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha5_0pi = (imsig5[0+fdimo25,q,0,0]-imsig5[1+fdimo25,q,0,0])/(freqset5[0]-freqset5[1])
 
-Z4_0pi   = 1.0/(alpha4_0pi+1)
-Z4p5_0pi = 1.0/(alpha4p5_0pi+1)
+Z4_0pi   = 1.0/(-alpha4_0pi+1)
+Z4p5_0pi = 1.0/(-alpha4p5_0pi+1)
+Z5_0pi = 1.0/(-alpha5_0pi+1)
+
 
 #q=(pi/2,pi/2)
 
@@ -1082,10 +1217,12 @@ elif PATCH_COUNT==64:
     q = 45
 
 alpha4_pi2pi2   = (imsig4[0+fdimo24,q,0,0]-imsig4[1+fdimo24,q,0,0])/(freqset4[0]-freqset4[1])
-alpha4p5_pi2pi2 = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha4p5_pi2pi2 = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4p5[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha5_pi2pi2 = (imsig5[0+fdimo25,q,0,0]-imsig5[1+fdimo25,q,0,0])/(freqset5[0]-freqset5[1])
 
-Z4_pi2pi2   = 1.0/(alpha4_pi2pi2+1)
-Z4p5_pi2pi2 = 1.0/(alpha4p5_pi2pi2+1)
+Z4_pi2pi2   = 1.0/(-alpha4_pi2pi2+1)
+Z4p5_pi2pi2 = 1.0/(-alpha4p5_pi2pi2+1)
+Z5_pi2pi2 = 1.0/(-alpha5_pi2pi2+1)
  
 #q=(pi,pi)
 
@@ -1097,28 +1234,32 @@ elif PATCH_COUNT==64:
     q = 63
 
 alpha4_pipi   = (imsig4[0+fdimo24,q,0,0]-imsig4[1+fdimo24,q,0,0])/(freqset4[0]-freqset4[1])
-alpha4p5_pipi = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha4p5_pipi = (imsig4p5[0+fdimo24p5,q,0,0]-imsig4p5[1+fdimo24p5,q,0,0])/(freqset4p5[0]-freqset4p5[1])
+alpha5_pipi   = (imsig5[0+fdimo25,q,0,0]-imsig5[1+fdimo25,q,0,0])/(freqset5[0]-freqset5[1])
 
 print alpha4_pipi, alpha4p5_pipi
 
-Z4_pipi   = 1.0/(alpha4_pipi+1)
-Z4p5_pipi = 1.0/(alpha4p5_pipi+1)
+Z4_pipi   = 1.0/(-alpha4_pipi+1)
+Z4p5_pipi = 1.0/(-alpha4p5_pipi+1)
+Z5_pipi = 1.0/(-alpha5_pipi+1)
 
 x = [0,1,2,3]
 x_plot = [-1,0,1,2,3,4]
 labels=["", "$(0,0)$", "$(0,\pi)$", "$(\pi/2,\pi/2)$", "$(\pi,\pi)$", ""]
 
 def plotZ( use_pl):
-    pl.plot( x, np.array([Z4_00, Z4_0pi, Z4_pi2pi2, Z4_pipi]), 'go', label="$beta=4$")
-    pl.plot( x, np.array([Z4p5_00, Z4p5_0pi, Z4p5_pi2pi2, Z4p5_pipi]), 'rv', label="$beta=4.5$")
+    pl.plot( x, np.array([Z4_00, Z4_0pi, Z4_pi2pi2, Z4_pipi]), 'go', label=r"$\beta=4$")
+    pl.plot( x, np.array([Z4p5_00, Z4p5_0pi, Z4p5_pi2pi2, Z4p5_pipi]), 'rv', label=r"$\beta=4.5$")
+    pl.plot( x, np.array([Z5_00, Z5_0pi, Z5_pi2pi2, Z5_pipi]), 'ms', label=r"$\beta=5$")
     pl.xticks(x_plot, labels)
-    pl.ylim([1.0, 1.0009])
+    #pl.ylim([1.0, 1.0009])
     pl.ylabel("Z")
-    pl.legend(loc=2, prop={'size':9})
+    pl.legend(loc=1, prop={'size':8})
     return
 
-pl.suptitle(r"$U=$" + str(UINT1) )
+#pl.suptitle(r"$U=$" + str(UINT1) )
 
+fig = pl.figure(figsize=cm2inch(12.0,12.0))
 #--- Plot physical
 plotZ( pl.subplot(1,1,1) ) 
 
@@ -1129,2739 +1270,2739 @@ pl.savefig("plots/Z.png", dpi=150)
 pl.figure(dpi=100) # Reset dpi to default
 pl.clf()
 
-#========================================================================================================================
+##========================================================================================================================
+##
+##                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
+##                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
+##                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##
+##========================================================================================================================
 #
-#                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
-#                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
-#                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##BETA=1.0
 #
-#========================================================================================================================
-
-#BETA=1.0
-
-fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta1_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
-
-if len(sys.argv) > 1:
-    fname1 = str(sys.argv[1])
-
-fname1 = fname1.rstrip('\n') # strip newline of fname
-f1 = h5py.File(fname1, "r")
-
-
-print("Plotting phi ...")
-
-#--- Read
-rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
-imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
-rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
-imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
-rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
-imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
-
-bdim = rephi_pp.shape[0]
-fdim = rephi_pp.shape[1]
-mom_dim = rephi_pp.shape[3]
-ffactor_dim = rephi_pp.shape[4]
-bdimm1o2 = (bdim-1)/2
-fdimo2=fdim/2
-
-phigrid = np.array(f1["/phi_func/fgrid"])
-mom_phigrid = np.arange(mom_dim+1)
-
-   
-# CREATE MAPPING TO THE 2D BRILLOUIN ZONE
-
-def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
-    q = get_patch(qx,qy)
-    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
-
-def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-
-#-----------------------------------NONLOCAL PHI PP------------------------------------------------------
-
-#---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
-
-pl.figure(figsize=(30,30))
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta1_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
+#
+#if len(sys.argv) > 1:
+#    fname1 = str(sys.argv[1])
+#
+#fname1 = fname1.rstrip('\n') # strip newline of fname
+#f1 = h5py.File(fname1, "r")
+#
+#
+#print("Plotting phi ...")
+#
+##--- Read
+#rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
+#imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
+#rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
+#imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
+#rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
+#imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
+#
+#bdim = rephi_pp.shape[0]
+#fdim = rephi_pp.shape[1]
+#mom_dim = rephi_pp.shape[3]
+#ffactor_dim = rephi_pp.shape[4]
+#bdimm1o2 = (bdim-1)/2
+#fdimo2=fdim/2
+#
+#phigrid = np.array(f1["/phi_func/fgrid"])
+#mom_phigrid = np.arange(mom_dim+1)
+#
+#   
+## CREATE MAPPING TO THE 2D BRILLOUIN ZONE
+#
+#def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
+#    q = get_patch(qx,qy)
+#    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
+#
+#def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#
+##-----------------------------------NONLOCAL PHI PP------------------------------------------------------
+#
+##---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
+#
+#pl.figure(figsize=(30,30))
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#pl.figure(figsize=(30,30))
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#pl.figure(figsize=(30,30))
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_spin_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT PHI BLOCKS
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.8) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.ylabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-pl.figure(figsize=(30,30))
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-pl.figure(figsize=(30,30))
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA1) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_spin_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".eps", format='eps', dpi=150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT PHI BLOCKS
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.8) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.ylabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#CHARGE
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#MAGNETIC
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#=============================================================================================================
-#           
-#                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##--- Save to file
+#pl.savefig("plots/phi_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-print phigrid
-
-print fdim
-fdim_plot = np.array([(2*i+1)*pi/BETA1 for i in range(-fdimo2-1,fdimo2)])
-def plotphiloc( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
-    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
-    pl.ylim([min(fdim_plot),max(fdim_plot)])
-    pl.xlim([min(fdim_plot),max(fdim_plot)])
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.6) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-
-
-#OMEGA = 0
-omega=0
-plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=1
-omega= 1
-plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=2
-omega= 2
-plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xlabel(r"$\nu$")
-plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_loc_U2_beta="+ str(BETA1)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#========================================================================================================================
 #
-#                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
-#                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
-#                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
-#
-#========================================================================================================================
-
-#BETA=2.0
-
-fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta2_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
-
-if len(sys.argv) > 1:
-    fname1 = str(sys.argv[1])
-
-fname1 = fname1.rstrip('\n') # strip newline of fname
-f1 = h5py.File(fname1, "r")
-
-
-print("Plotting phi ...")
-
-#--- Read
-rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
-imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
-rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
-imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
-rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
-imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
-
-bdim = rephi_pp.shape[0]
-fdim = rephi_pp.shape[1]
-mom_dim = rephi_pp.shape[3]
-ffactor_dim = rephi_pp.shape[4]
-bdimm1o2 = (bdim-1)/2
-fdimo2=fdim/2
-
-phigrid = np.array(f1["/phi_func/fgrid"])
-mom_phigrid = np.arange(mom_dim+1)
-
-   
-# CREATE MAPPING TO THE 2D BRILLOUIN ZONE
-
-def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
-    q = get_patch(qx,qy)
-    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
-
-def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-
-#-----------------------------------NONLOCAL PHI PP------------------------------------------------------
-
-#---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
-pl.figure(figsize=(30,30))
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+##CHARGE
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_spin_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT PHI BLOCKS
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.8) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.ylabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#CHARGE
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#MAGNETIC
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#=============================================================================================================
-#           
-#                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
 #
-#============================================================================================================
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-print phigrid
-
-print fdim
-fdim_plot = np.array([(2*i+1)*pi/BETA2 for i in range(-fdimo2-1,fdimo2)])
-def plotphiloc( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
-    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
-    pl.ylim([min(fdim_plot),max(fdim_plot)])
-    pl.xlim([min(fdim_plot),max(fdim_plot)])
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.6) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-
-
-#OMEGA = 0
-omega=0
-plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=1
-omega= 1
-plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=2
-omega= 2
-plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xlabel(r"$\nu$")
-plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_loc_U2_beta="+ str(BETA2)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#========================================================================================================================
 #
-#                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
-#                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
-#                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##MAGNETIC
 #
-#========================================================================================================================
-
-#BETA=4.0
-
-fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
-
-if len(sys.argv) > 1:
-    fname1 = str(sys.argv[1])
-
-fname1 = fname1.rstrip('\n') # strip newline of fname
-f1 = h5py.File(fname1, "r")
-
-
-print("Plotting phi ...")
-
-#--- Read
-rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
-imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
-rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
-imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
-rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
-imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
-
-bdim = rephi_pp.shape[0]
-fdim = rephi_pp.shape[1]
-mom_dim = rephi_pp.shape[3]
-ffactor_dim = rephi_pp.shape[4]
-bdimm1o2 = (bdim-1)/2
-fdimo2=fdim/2
-
-phigrid = np.array(f1["/phi_func/fgrid"])
-mom_phigrid = np.arange(mom_dim+1)
-
-   
-# CREATE MAPPING TO THE 2D BRILLOUIN ZONE
-
-def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
-    q = get_patch(qx,qy)
-    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
-
-def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-
-#-----------------------------------NONLOCAL PHI PP------------------------------------------------------
-
-#---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
-
-pl.figure(figsize=(30,30))
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_spin_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT PHI BLOCKS
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.8) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.ylabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA1)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-print phigrid
-
-print fdim
-fdim_plot = np.array([(2*i+1)*pi/BETA4 for i in range(-fdimo2-1,fdimo2)])
-def plotphiloc( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
-    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
-    pl.ylim([min(fdim_plot),max(fdim_plot)])
-    pl.xlim([min(fdim_plot),max(fdim_plot)])
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.6) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-
-
-#OMEGA = 0
-omega=0
-plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=1
-omega= 1
-plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=2
-omega= 2
-plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xlabel(r"$\nu$")
-plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_loc_U2_beta="+ str(BETA4)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#========================================================================================================================
+##=============================================================================================================
+##           
+##                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##
+##============================================================================================================
 #
-#                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
-#                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
-#                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#print phigrid
 #
-#========================================================================================================================
-
-#BETA=4.5
-
-fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4p5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
-
-if len(sys.argv) > 1:
-    fname1 = str(sys.argv[1])
-
-fname1 = fname1.rstrip('\n') # strip newline of fname
-f1 = h5py.File(fname1, "r")
-
-
-print("Plotting phi ...")
-
-#--- Read
-rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
-imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
-rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
-imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
-rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
-imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
-
-bdim = rephi_pp.shape[0]
-fdim = rephi_pp.shape[1]
-mom_dim = rephi_pp.shape[3]
-ffactor_dim = rephi_pp.shape[4]
-bdimm1o2 = (bdim-1)/2
-fdimo2=fdim/2
-
-phigrid = np.array(f1["/phi_func/fgrid"])
-mom_phigrid = np.arange(mom_dim+1)
-
-   
-# CREATE MAPPING TO THE 2D BRILLOUIN ZONE
-
-def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
-    q = get_patch(qx,qy)
-    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
-
-def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
-    q = get_patch(qx,qy)
-    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
-
-
-#-----------------------------------NONLOCAL PHI PP------------------------------------------------------
-
-#---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
-
-pl.figure(figsize=(30,30))
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
+#print fdim
+#fdim_plot = np.array([(2*i+1)*pi/BETA1 for i in range(-fdimo2-1,fdimo2)])
+#def plotphiloc( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
+#    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
+#    pl.ylim([min(fdim_plot),max(fdim_plot)])
+#    pl.xlim([min(fdim_plot),max(fdim_plot)])
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.6) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#
+#
+##OMEGA = 0
+#omega=0
+#plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=1
+#omega= 1
+#plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=2
+#omega= 2
+#plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xlabel(r"$\nu$")
+#plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
 #pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-#pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-pl.figure(figsize=(30,30))
-
-def plotphi( use_pl, arr):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    pl.colorbar(shrink=0.6) 
-    return
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
-
-#ROW 1
-plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 2
-plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 3
-plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 4
-plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#ROW 5
-plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-#pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_spin_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT PHI BLOCKS
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-
-def plotphi( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    pl.pcolormesh(bgrid, bgrid , arr )
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.8) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.ylabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#CHARGE
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#MAGNETIC
-
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-omega=0
-nu=0
-nup=0
-
-
-#block 1
-plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 2
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-
-#block 3
-plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
-#off-diagonal
-plotphi( pl.subplot(3,3,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{01}$") # flip sign of w_out
-pl.xticks([], [])
-pl.ylabel(r"$q_y$")
-plotphi( pl.subplot(3,3,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{02}$") # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphi( pl.subplot(3,3,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{03}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{04}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xticks([], [])
-
-plotphi( pl.subplot(3,3,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{13}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{14}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xticks([], [])
-plotphi( pl.subplot(3,3,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{23}$") # flip sign of w_out
-pl.ylabel(r"$q_y$")
-pl.xlabel(r"$q_x$")
-plotphi( pl.subplot(3,3,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{24}$") # flip sign of w_out
-pl.yticks([], [])
-pl.xlabel(r"$q_x$")
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-#=============================================================================================================
-#           
-#                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##--- Save to file
+#pl.savefig("plots/phi_loc_U2_beta="+ str(BETA1)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
 #
-#============================================================================================================
-
-bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
-print phigrid
-
-print fdim
-fdim_plot = np.array([(2*i+1)*pi/BETA4p5 for i in range(-fdimo2-1,fdimo2)])
-def plotphiloc( use_pl, arr, string):
-    use_pl.set_aspect(1.0)
-    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
-    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
-    pl.ylim([min(fdim_plot),max(fdim_plot)])
-    pl.xlim([min(fdim_plot),max(fdim_plot)])
-    use_pl.set_title( string , fontsize=10 )
-    pl.colorbar(shrink=0.6) 
-    return
-#--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
-
-
-
-#OMEGA = 0
-omega=0
-plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=1
-omega= 1
-plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xticks([], [])
-plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
-pl.xticks([], [])
-pl.yticks([], [])
-
-#OMEGA=2
-omega= 2
-plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
-pl.ylabel(r"$\nu'$")
-pl.xlabel(r"$\nu$")
-plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
-pl.xlabel(r"$\nu$")
-pl.yticks([], [])
-pl.tight_layout()
-
-#--- Save to file
-pl.savefig("plots/phi_loc_U2_beta="+ str(BETA4p5)+".png", dpi = 150)
-pl.figure(dpi=100) # Reset dpi to default
-pl.clf()
-
+##========================================================================================================================
+##
+##                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
+##                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
+##                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##
+##========================================================================================================================
+#
+##BETA=2.0
+#
+#fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta2_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
+#
+#if len(sys.argv) > 1:
+#    fname1 = str(sys.argv[1])
+#
+#fname1 = fname1.rstrip('\n') # strip newline of fname
+#f1 = h5py.File(fname1, "r")
+#
+#
+#print("Plotting phi ...")
+#
+##--- Read
+#rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
+#imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
+#rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
+#imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
+#rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
+#imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
+#
+#bdim = rephi_pp.shape[0]
+#fdim = rephi_pp.shape[1]
+#mom_dim = rephi_pp.shape[3]
+#ffactor_dim = rephi_pp.shape[4]
+#bdimm1o2 = (bdim-1)/2
+#fdimo2=fdim/2
+#
+#phigrid = np.array(f1["/phi_func/fgrid"])
+#mom_phigrid = np.arange(mom_dim+1)
+#
+#   
+## CREATE MAPPING TO THE 2D BRILLOUIN ZONE
+#
+#def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
+#    q = get_patch(qx,qy)
+#    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
+#
+#def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#
+##-----------------------------------NONLOCAL PHI PP------------------------------------------------------
+#
+##---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
+#pl.figure(figsize=(30,30))
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA2) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_spin_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT PHI BLOCKS
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.8) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.ylabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##CHARGE
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##MAGNETIC
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA2)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##=============================================================================================================
+##           
+##                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##
+##============================================================================================================
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#print phigrid
+#
+#print fdim
+#fdim_plot = np.array([(2*i+1)*pi/BETA2 for i in range(-fdimo2-1,fdimo2)])
+#def plotphiloc( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
+#    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
+#    pl.ylim([min(fdim_plot),max(fdim_plot)])
+#    pl.xlim([min(fdim_plot),max(fdim_plot)])
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.6) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#
+#
+##OMEGA = 0
+#omega=0
+#plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=1
+#omega= 1
+#plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=2
+#omega= 2
+#plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xlabel(r"$\nu$")
+#plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_loc_U2_beta="+ str(BETA2)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##========================================================================================================================
+##
+##                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
+##                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
+##                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##
+##========================================================================================================================
+#
+##BETA=4.0
+#
+#fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
+#
+#if len(sys.argv) > 1:
+#    fname1 = str(sys.argv[1])
+#
+#fname1 = fname1.rstrip('\n') # strip newline of fname
+#f1 = h5py.File(fname1, "r")
+#
+#
+#print("Plotting phi ...")
+#
+##--- Read
+#rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
+#imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
+#rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
+#imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
+#rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
+#imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
+#
+#bdim = rephi_pp.shape[0]
+#fdim = rephi_pp.shape[1]
+#mom_dim = rephi_pp.shape[3]
+#ffactor_dim = rephi_pp.shape[4]
+#bdimm1o2 = (bdim-1)/2
+#fdimo2=fdim/2
+#
+#phigrid = np.array(f1["/phi_func/fgrid"])
+#mom_phigrid = np.arange(mom_dim+1)
+#
+#   
+## CREATE MAPPING TO THE 2D BRILLOUIN ZONE
+#
+#def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
+#    q = get_patch(qx,qy)
+#    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
+#
+#def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#
+##-----------------------------------NONLOCAL PHI PP------------------------------------------------------
+#
+##---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
+#
+#pl.figure(figsize=(30,30))
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_spin_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT PHI BLOCKS
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.8) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.ylabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#print phigrid
+#
+#print fdim
+#fdim_plot = np.array([(2*i+1)*pi/BETA4 for i in range(-fdimo2-1,fdimo2)])
+#def plotphiloc( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
+#    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
+#    pl.ylim([min(fdim_plot),max(fdim_plot)])
+#    pl.xlim([min(fdim_plot),max(fdim_plot)])
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.6) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#
+#
+##OMEGA = 0
+#omega=0
+#plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=1
+#omega= 1
+#plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=2
+#omega= 2
+#plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xlabel(r"$\nu$")
+#plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_loc_U2_beta="+ str(BETA4)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##========================================================================================================================
+##
+##                                       EXCHANGE SEMI-BOSONIC PROPAGATOR
+##                               a) NON-LOCAL ONE FOR FIXED OMEGA=0 nu=nu'=0 FOR DIFFERENT FORM-FACTORS AND Q-VALUES
+##                               b) LOCAL ONE FOR FF1=FF2=0 AS FUNCTION OF OMEGA AND NU-NU'
+##
+##========================================================================================================================
+#
+##BETA=4.5
+#
+#fname1 = "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta4p5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withSE.h5"
+#
+#if len(sys.argv) > 1:
+#    fname1 = str(sys.argv[1])
+#
+#fname1 = fname1.rstrip('\n') # strip newline of fname
+#f1 = h5py.File(fname1, "r")
+#
+#
+#print("Plotting phi ...")
+#
+##--- Read
+#rephi_pp = vert_mul * np.array(f1["/phi_func/RE_PP"])
+#imphi_pp = vert_mul * np.array(f1["/phi_func/IM_PP"])
+#rephi_ph = vert_mul * np.array(f1["/phi_func/RE_PH"])
+#imphi_ph = vert_mul * np.array(f1["/phi_func/IM_PH"])
+#rephi_xph = vert_mul * np.array(f1["/phi_func/RE_XPH"])
+#imphi_xph = vert_mul * np.array(f1["/phi_func/IM_XPH"])
+#
+#bdim = rephi_pp.shape[0]
+#fdim = rephi_pp.shape[1]
+#mom_dim = rephi_pp.shape[3]
+#ffactor_dim = rephi_pp.shape[4]
+#bdimm1o2 = (bdim-1)/2
+#fdimo2=fdim/2
+#
+#phigrid = np.array(f1["/phi_func/fgrid"])
+#mom_phigrid = np.arange(mom_dim+1)
+#
+#   
+## CREATE MAPPING TO THE 2D BRILLOUIN ZONE
+#
+#def rephi_func_pp(wb, wf, wfp, qx, qyi,f1, f2):
+#    q = get_patch(qx,qy)
+#    return rephi_pp[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1,f2, 0, 0, 0, 0]
+#
+#def rephi_func_d(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return 2*rephi_ph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]-rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#def rephi_func_m(wb, wf, wfp, qx, qy, f1, f2):
+#    q = get_patch(qx,qy)
+#    return -rephi_xph[wb+bdimm1o2, wf+fdimo2, wfp+fdimo2,q, f1, f2, 0, 0, 0, 0]
+#
+#
+##-----------------------------------NONLOCAL PHI PP------------------------------------------------------
+#
+##---  Helper functions (include translation from  nambu to physical CAUTION : USING TIME REVERSAL SYMM) 
+#
+#pl.figure(figsize=(30,30))
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_d(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_d(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#pl.figure(figsize=(30,30))
+#
+#def plotphi( use_pl, arr):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    pl.colorbar(shrink=0.6) 
+#    return
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#pl.suptitle(r"$U=$" + str(UINT1) + r"     $\beta=$" + str(BETA4p5) +  r"     $\Omega=$" + str(omega) + r"$*2\pi/\beta$" +  r"     $(\omega,\omega')=($"+str(nu)+ r","+ str(nup) + r"$) \pi/\beta$")
+#
+##ROW 1
+#plotphi( pl.subplot(5,5,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 2
+#plotphi( pl.subplot(5,5,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,9), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,10), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 3
+#plotphi( pl.subplot(5,5,11), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,12), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,13), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,14), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,15), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 4
+#plotphi( pl.subplot(5,5,16), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(5,5,17), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,18), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,19), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(5,5,20), np.array([[rephi_func_m(omega, nu, nup, qx, qy,3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##ROW 5
+#plotphi( pl.subplot(5,5,21), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,22), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,23), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,24), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(5,5,25), np.array([[rephi_func_m(omega, nu, nup, qx, qy,4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)])) # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+##pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_spin_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT PHI BLOCKS
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#
+#def plotphi( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    pl.pcolormesh(bgrid, bgrid , arr )
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.8) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{00}$" ) # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.ylabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_pp(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{PP}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_pp_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##CHARGE
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_d(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{ch}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_charge_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##MAGNETIC
+#
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#omega=0
+#nu=0
+#nup=0
+#
+#
+##block 1
+#plotphi( pl.subplot(1,1,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,0, 0) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{00}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block1.png", dpi = 100)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 2
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{11}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy,1, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{12}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{21}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy,2, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{22}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block2.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+#
+##block 3
+#plotphi( pl.subplot(2,2,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{33}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(2,2,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 3, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{34}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(2,2,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{43}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(2,2,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 4, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{44}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_block3.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#
+##off-diagonal
+#plotphi( pl.subplot(3,3,1), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 1) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{01}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.ylabel(r"$q_y$")
+#plotphi( pl.subplot(3,3,2), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 2) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{02}$") # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphi( pl.subplot(3,3,3), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{03}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,4), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 0, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{04}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xticks([], [])
+#
+#plotphi( pl.subplot(3,3,5), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{13}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,6), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 1, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{14}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xticks([], [])
+#plotphi( pl.subplot(3,3,7), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 3) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{23}$") # flip sign of w_out
+#pl.ylabel(r"$q_y$")
+#pl.xlabel(r"$q_x$")
+#plotphi( pl.subplot(3,3,8), np.array([[rephi_func_m(omega, nu, nup, qx, qy, 2, 4) for qy in range(-MAX_KPOS+1,MAX_KPOS+1)] for qx in range(-MAX_KPOS+1, MAX_KPOS+1)]),RE + r"\phi^{sp}_{24}$") # flip sign of w_out
+#pl.yticks([], [])
+#pl.xlabel(r"$q_x$")
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_magnetic_U2_beta="+ str(BETA4p5)+"_W="+str(omega)+"_nu="+str(nu)+"_nup="+str(nup)+"_offdiag.png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+##=============================================================================================================
+##           
+##                                   PLOT LOCAL PHI FOR DIFFERENT OMEGA
+##
+##============================================================================================================
+#
+#bgrid = np.array([pi*k/MAX_KPOS for k in range(-MAX_KPOS+1, MAX_KPOS+1)])
+#print phigrid
+#
+#print fdim
+#fdim_plot = np.array([(2*i+1)*pi/BETA4p5 for i in range(-fdimo2-1,fdimo2)])
+#def plotphiloc( use_pl, arr, string):
+#    use_pl.set_aspect(1.0)
+#    zarr = np.array([[ np.sum(arr[omega+bdimm1o2,m,n,:,0,0,0,0,0,0], axis =(0))/(mom_dim) for n in range(fdim)] for m in range(fdim)])
+#    pl.pcolormesh(fdim_plot, fdim_plot, zarr )
+#    pl.ylim([min(fdim_plot),max(fdim_plot)])
+#    pl.xlim([min(fdim_plot),max(fdim_plot)])
+#    use_pl.set_title( string , fontsize=10 )
+#    pl.colorbar(shrink=0.6) 
+#    return
+##--- Plot relavant blocks (00) (11, 12\\ 21, 22) (33, 34 \\43, 44)
+#
+#
+#
+##OMEGA = 0
+#omega=0
+#plotphiloc( pl.subplot(3,3,1), rephi_pp ,RE + r"\phi^{PP}_{loc}$" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,2), 2*rephi_ph-rephi_xph ,RE + r"\phi^{ch}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,3), -rephi_xph ,RE + r"\phi^{sp}_{loc}$" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=1
+#omega= 1
+#plotphiloc( pl.subplot(3,3,4), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xticks([], [])
+#plotphiloc( pl.subplot(3,3,5), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,6), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xticks([], [])
+#pl.yticks([], [])
+#
+##OMEGA=2
+#omega= 2
+#plotphiloc( pl.subplot(3,3,7), rephi_pp ,"" ) # flip sign of w_out
+#pl.ylabel(r"$\nu'$")
+#pl.xlabel(r"$\nu$")
+#plotphiloc( pl.subplot(3,3,8), 2*rephi_ph-rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#plotphiloc( pl.subplot(3,3,9), -rephi_xph ,"" ) # flip sign of w_out
+#pl.xlabel(r"$\nu$")
+#pl.yticks([], [])
+#pl.tight_layout()
+#
+##--- Save to file
+#pl.savefig("plots/phi_loc_U2_beta="+ str(BETA4p5)+".png", dpi = 150)
+#pl.figure(dpi=100) # Reset dpi to default
+#pl.clf()
+#

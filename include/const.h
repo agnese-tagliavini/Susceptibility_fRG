@@ -75,20 +75,32 @@ const int FFACTOR_COUNT = 1;
 
 #else
 #ifdef UNIFORM_GRID
-const int MAX_KPOS = 4;						///< Points on positive kx,ky,kz directions 
+const int MAX_KPOS = 2;						///< Points on positive kx,ky,kz directions 
 const int PATCH_COUNT = 4*MAX_KPOS*MAX_KPOS;		///< Amount of k-patches
 #elif defined SIMPLE_PATCH
 const int PATCH_COUNT = 8;
 #endif
+
+#ifdef FIRST_NN
 const int NN_COUNT = 1;						///< Next-neighbour considered
 const int FFACTOR_COUNT = 5; ///< Amount of form factors->changed accordingly with NN_COUNT in grid.h 					
 const int REAL_GRID_FF_SHELL= FFACTOR_COUNT;
 
 const int FFREAL_DIM = 3;                                       ///< Adjust accordingly with the NN_COUNT (e.g NN_COUNT=0 -> FFREAL_DIM = 1, NN_COUNT=1,2,3 -> FFREAL_DIM = 3) 
 
-
 const int REAL_GRID = 13; 
 const int MAX_PROJ_R_GRID = 4;
+
+
+#elif defined LOCAL
+const int NN_COUNT = 0;						///< Next-neighbour considered
+const int FFACTOR_COUNT = 1;				        ///< Amount of form factors->changed accordingly with NN_COUNT in grid.h 					
+const int REAL_GRID_FF_SHELL= FFACTOR_COUNT;			///< number of real grid vectors which corresponds to the form factor shell 	
+const int FFREAL_DIM = 1;                                       ///< Adjust accordingly with the NN_COUNT (e.g NN_COUNT=0 -> FFREAL_DIM = 1, NN_COUNT=1,2,3 -> FFREAL_DIM = 3) 
+
+const int REAL_GRID = 1; 
+const int MAX_PROJ_R_GRID = 0; 
+#endif
 const int FFT_DIM = 16; 					///< Dimension of the FFT grid in every directions
 
 #endif

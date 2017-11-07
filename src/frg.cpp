@@ -52,7 +52,7 @@ gf_1p_t gf_Sig_read(POS_SIG_IN);
 void read_exact()
 {
    using namespace H5;
-   H5File input_file( "dat/carsten_comparison/U2/PREPROC/dat_U2_Beta1_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_maxkpos4_allsymm_withoutSE.h5", H5F_ACC_RDONLY );
+   H5File input_file( "dat/dat_U2_Beta5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_mkp2_allsymm_withSE_with_4pi2_swave_notrileg.h5", H5F_ACC_RDONLY );
    cout << "Got file" << endl;
 
    Group phi_group =  input_file.openGroup("/phi_func");

@@ -122,9 +122,9 @@ int main ( int argc, char * argv[])
 #endif
 
    FILE_NAME.append("_SU2"); 
-   FILE_NAME.append("_2D_bare");
+   FILE_NAME.append("_2D");
 
-   FILE_NAME.append(".h5"); 
+   FILE_NAME.append("_bare.h5"); 
 
    //const H5std_string	FILE_NAME("dat/dat.h5");
    H5File file( FILE_NAME, H5F_ACC_TRUNC );
