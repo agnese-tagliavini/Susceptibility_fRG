@@ -313,6 +313,68 @@ dcomplex state_t::suscept_m( int W, int K, int n_in, int n_out, int s1_in, int s
    return gf_suscept_m()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
 
+dcomplex state_t::tri_sc( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ){
+     if (W > -POS_BFREQ_COUNT_TRI-1 || W < POS_BFREQ_COUNT_TRI + 1)
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_sc(W, K, s1_in, s2_in, s1_out, s2_out );
+     else
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out); 
+   }
+
+   return gf_tri_sc()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+}
+
+
+dcomplex state_t::tri_d( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ){
+     if (W > -POS_BFREQ_COUNT_TRI-1 || W < POS_BFREQ_COUNT_TRI + 1)
+       return tri_bare( n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_d(W, K, s1_in, s2_in, s1_out, s2_out );
+     else
+       return tri_bare( n_in, n_out, s1_in, s2_in, s1_out, s2_out); 
+   }
+ 
+   return gf_tri_d()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+}
+
+dcomplex state_t::tri_m( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ){
+     if (W > -POS_BFREQ_COUNT_TRI-1 || W < POS_BFREQ_COUNT_TRI + 1)
+       return tri_bare( n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_m(W, K, s1_in, s2_in, s1_out, s2_out ); 
+     else
+       return tri_bare( n_in, n_out, s1_in, s2_in, s1_out, s2_out); 
+   }
+
+   return gf_tri_m()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+}
+
+dcomplex state_t::asytri_sc( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+  if (W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+    return 0.0;
+
+   return gf_asytri_sc()[W][K][s1_in][s2_in][s1_out][s2_out]; 
+}
+
+
+dcomplex state_t::asytri_d( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+     if (W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+       return 0.0;
+     
+   return gf_asytri_d()[W][K][s1_in][s2_in][s1_out][s2_out]; 
+}
+
+dcomplex state_t::asytri_m( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   if ( W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+     return 0.0;
+
+   return gf_asytri_m()[W][K][s1_in][s2_in][s1_out][s2_out]; 
+}
+
 //PROJECTION FUNCTIONS
 //TO PP
 dcomplex state_t::proj_pp_phi_ph( int W, int w_in, int w_out, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const

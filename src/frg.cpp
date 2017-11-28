@@ -20,15 +20,15 @@ using namespace std;
 
 #ifdef READIN
 
-const int POS_FERM_PHI_IN = 2;
-const int POS_BOS_PHI_IN = 4;
+const int POS_FERM_PHI_IN = 12;
+const int POS_BOS_PHI_IN = 8;
 
-const int POS_FERM_P_IN = 8;
-const int POS_BOS_P_IN = 12;
+const int POS_FERM_P_IN = 16;
+const int POS_BOS_P_IN = 24;
 
-const int POS_BOS_CHI_IN = 128;
+const int POS_BOS_CHI_IN = 256;
 
-const int POS_SIG_IN = 8; 
+const int POS_SIG_IN = 16; 
 // Read the 2P reducible vertex on the form factor basis
 
 gf_phi_t gf_phi_pp_read( POS_BOS_PHI_IN, POS_FERM_PHI_IN); 
@@ -52,7 +52,8 @@ gf_1p_t gf_Sig_read(POS_SIG_IN);
 void read_exact()
 {
    using namespace H5;
-   H5File input_file( "dat/dat_U2_Beta5_PFCB128_HUB_INTFL_SU2_2D_4PISYMM_mkp2_allsymm_withSE_with_4pi2_swave_notrileg.h5", H5F_ACC_RDONLY );
+   H5File input_file( "dat/dat_U2_Beta5_PFCB256_HUB_OMFL_SU2_2D_4PISYMM_mkp2_ONLY_K_SYMM_WITHSE.h5", H5F_ACC_RDONLY );
+
    cout << "Got file" << endl;
 
    Group phi_group =  input_file.openGroup("/phi_func");
@@ -291,7 +292,7 @@ dcomplex P_init_pp( const idx_P_t& idx ) // initial self-energy values in Nambu 
 dcomplex P_init_ph( const idx_P_t& idx ) // initial self-energy values in Nambu basis
 {
 #ifdef READIN
-   return gf_P_pp_read[idx(IP::W)][idx(IP::w)][idx(IP::K)][idx(IP::n)][idx(IP::s1_in)][idx(IP::s2_in)][idx(IP::s1_out)][idx(IP::s2_out)]; 
+   return gf_P_ph_read[idx(IP::W)][idx(IP::w)][idx(IP::K)][idx(IP::n)][idx(IP::s1_in)][idx(IP::s2_in)][idx(IP::s1_out)][idx(IP::s2_out)]; 
 #endif
    return 0.0; // vanishes for weak coupling flows
 }
@@ -345,4 +346,15 @@ dcomplex suscept_init_d( const idx_suscept_t& idx ) // inital Karrasch functions
 dcomplex suscept_init_m( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
 {
    return 0.0; // vanishes for weak coupling flows
+}
+
+dcomplex tri_init( const idx_tri_t& idx ) // inital Karrasch functions in Nambu basis
+{
+  return tri_bare(idx(ITRI::n_in),idx(ITRI::n_out), idx(ITRI::s1_in), idx(ITRI::s2_in), idx(ITRI::s1_out), idx(ITRI::s2_out)); // vanishes for weak coupling flows
+  //return 0.0;
+}
+
+dcomplex tri_bare(int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out )
+{
+  return double(n_in == n_out);
 }

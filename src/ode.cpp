@@ -73,10 +73,14 @@ int main ( int argc, char * argv[])
    state_vec.gf_chi_ph().init( chi_init_ph ); 
    state_vec.gf_chi_xph().init( chi_init_xph );
 
-   state_vec.gf_suscept_trip().init( suscept_init_t ); 
+   state_vec.gf_suscept_trip().init( suscept_init_s ); 
    state_vec.gf_suscept_s().init( suscept_init_s ); 
    state_vec.gf_suscept_d().init( suscept_init_d );
    state_vec.gf_suscept_m().init( suscept_init_m );
+   
+   state_vec.gf_tri_sc().init( tri_init ); 
+   state_vec.gf_tri_d().init( tri_init );
+   state_vec.gf_tri_m().init( tri_init );
 
 
 /************************** CALC SUSCEPTIBILITIES **************************************/
@@ -124,7 +128,7 @@ int main ( int argc, char * argv[])
    FILE_NAME.append("_SU2"); 
    FILE_NAME.append("_2D");
 
-   FILE_NAME.append("_bare.h5"); 
+   FILE_NAME.append("_OMFL_NEWASYMPT_MATSUM.h5"); 
 
    //const H5std_string	FILE_NAME("dat/dat.h5");
    H5File file( FILE_NAME, H5F_ACC_TRUNC );
@@ -133,6 +137,13 @@ int main ( int argc, char * argv[])
    write_config( file );		
    write_params( file );
    write_suscept_func( file, state_vec );
+   write_tri_func( file, state_vec );
+   write_asytri_func( file, state_vec );
+   write_Sig_tensor( file, state_vec );
+   write_vert_func( file, state_vec ); 
+   write_phi_func( file, state_vec ); 
+   write_chi_func( file, state_vec ); 
+   write_P_func( file, state_vec ); 
    
    return 0;
 

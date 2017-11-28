@@ -17,16 +17,17 @@
 #include <symmetry_group.h>
 #include <symmetries.h>
 
-class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_phi_t, gf_P_t, gf_P_t, gf_P_t, gf_chi_t, gf_chi_t, gf_chi_t, gf_suscept_t, gf_suscept_t, gf_suscept_t, gf_suscept_t > ///< Type of the state vector of the ODE solver
+class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_phi_t, gf_P_t, gf_P_t, gf_P_t, gf_chi_t, gf_chi_t, gf_chi_t, gf_suscept_t, gf_suscept_t, gf_suscept_t, gf_suscept_t,gf_tri_t, gf_tri_t, gf_tri_t, gf_chi_t, gf_chi_t, gf_chi_t > ///< Type of the state vector of the ODE solver
 {
    public:
-      using base_t = arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_phi_t, gf_P_t, gf_P_t, gf_P_t, gf_chi_t, gf_chi_t, gf_chi_t, gf_suscept_t, gf_suscept_t, gf_suscept_t, gf_suscept_t >; 
+      using base_t = arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_phi_t, gf_P_t, gf_P_t, gf_P_t, gf_chi_t, gf_chi_t, gf_chi_t, gf_suscept_t, gf_suscept_t, gf_suscept_t, gf_suscept_t, gf_tri_t, gf_tri_t, gf_tri_t, gf_chi_t, gf_chi_t, gf_chi_t>; 
       using base_base_t = base_t::base_t; 
       using Sig_t = gf_1p_t; 
       using phi_t = gf_phi_t; 
       using P_t = gf_P_t; 
       using chi_t = gf_chi_t; 
       using suscept_t = gf_suscept_t; 
+      using tri_t = gf_tri_t; 
 
       inline Sig_t& gf_Sig()			        { return std::get<0>( *this ); }
       inline const Sig_t& gf_Sig() const	        { return std::get<0>( *this ); }
@@ -69,6 +70,25 @@ class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_ph
       
       inline suscept_t& gf_suscept_m()			{ return std::get<13>( *this ); }
       inline const suscept_t& gf_suscept_m() const	{ return std::get<13>( *this ); }
+      
+      inline tri_t& gf_tri_sc()				{ return std::get<14>( *this ); }
+      inline const tri_t& gf_tri_sc() const		{ return std::get<14>( *this ); }
+      
+      inline tri_t& gf_tri_d()				{ return std::get<15>( *this ); }
+      inline const tri_t& gf_tri_d() const		{ return std::get<15>( *this ); }
+      
+      inline tri_t& gf_tri_m()				{ return std::get<16>( *this ); }
+      inline const tri_t& gf_tri_m() const		{ return std::get<16>( *this ); }
+      
+      inline chi_t& gf_asytri_sc()			{ return std::get<17>( *this ); }
+      inline const chi_t& gf_asytri_sc() const		{ return std::get<17>( *this ); }
+      
+      inline chi_t& gf_asytri_d()			{ return std::get<18>( *this ); }
+      inline const chi_t& gf_asytri_d() const		{ return std::get<18>( *this ); }
+      
+      inline chi_t& gf_asytri_m()			{ return std::get<19>( *this ); }
+      inline const chi_t& gf_asytri_m() const		{ return std::get<19>( *this ); }
+      
       
       static gf_vert_bare_ff_t proj_vert_bare;
 
@@ -152,7 +172,15 @@ class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_ph
       dcomplex suscept_s( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
       dcomplex suscept_d( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
       dcomplex suscept_m( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      
+      dcomplex tri_sc( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      dcomplex tri_d( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      dcomplex tri_m( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
    
+      dcomplex asytri_sc( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      dcomplex asytri_d( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      dcomplex asytri_m( int W, int K, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return chi function for PH-channel
+      
       dcomplex proj_pp_phi_ph( int W, int w_in, int w_out, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return phi_ph projected in pp
       dcomplex proj_pp_phi_xph( int W, int w_in, int w_out, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return phi_xph projected in pp
       dcomplex proj_ph_phi_pp( int W, int w_in, int w_out, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const;	///< Return phi_pp projected in ph
@@ -178,6 +206,51 @@ class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_ph
       };
 
       static precalc precalculation;
+      
+      inline dcomplex vertx_pp( const idx_phi_t& idx ) const
+      {
+         return vertx_pp( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex vertx_ph( const idx_phi_t& idx ) const
+      {
+         return vertx_ph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex vertx_xph( const idx_phi_t& idx ) const
+      {
+         return vertx_xph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+      
+      inline dcomplex phi_pp( const idx_phi_t& idx ) const
+      {
+         return phi_pp( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex phi_ph( const idx_phi_t& idx ) const
+      {
+         return phi_ph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex phi_xph( const idx_phi_t& idx ) const
+      {
+         return phi_xph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+      
+      inline dcomplex R_pp( const idx_phi_t& idx ) const
+      {
+         return R_pp( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex R_ph( const idx_phi_t& idx ) const
+      {
+         return R_ph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
+
+      inline dcomplex R_xph( const idx_phi_t& idx ) const
+      {
+         return R_xph( idx(0), idx(1), idx(2), idx(3), idx(4), idx(5), idx(6), idx(7), idx(8), idx(9) ); 
+      }
 
       inline dcomplex suscept_trip( const idx_suscept_t& idx ) const
       {

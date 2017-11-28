@@ -15,7 +15,6 @@ HEADEXT := h
 #SOURCES := $(shell find $(SRCDIR) -name '*.$(SRCEXT)') 
 #HEADERS := $(shell find $(HEADDIR) -name '*.$(HEADEXT)') 
 SOURCES := $(shell ls -1 $(SRCDIR)/*.$(SRCEXT))
-SOURCES += /usr/include/cubature-1.0.2/hcubature.c
 HEADERS := $(shell ls -1 $(HEADDIR)/*.$(HEADEXT)) 
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 
@@ -35,16 +34,16 @@ CFLAGS += -D INT_FLOW #			Interaction Flow
 #CFLAGS += -D OMEGA_FLOW #		Omega flow according to Salmhofer/Gierig ( arxiv:1208.6131 )
 #CFLAGS += -D RES_FLOW #		Reservoir cutoff scheme
 
-#CFLAGS += -D READIN
+CFLAGS += -D READIN
 # -- Higher order corrections
-#CFLAGS += -D KATANIN #			Use katanin scheme
+CFLAGS += -D KATANIN #			Use katanin scheme
 #CFLAGS += -D TWOLOOP #			Use twoloop corrections
 
 CFLAGS += -D UNIFORM_GRID
 #CFLAGS += -D SIMPLE_PATCH
 
-#CFLAGS += -D LOCAL
-CFLAGS += -D FIRST_NN
+CFLAGS += -D LOCAL
+#CFLAGS += -D FIRST_NN
 #CFLAGS += -D BUBBLE_AVERAGED
 #--------------------------------------Compiler settings------------------------------------------
 
@@ -61,7 +60,6 @@ LIB := -lgsl -lgslcblas -lm $(H5LIB) -fopenmp -lmpi -lfftw3 #		Library flags
 INC += -I include 			#Additional include paths
 INC += -I /usr/include/eigen3 		#Additional include paths
 INC += -I /usr/include/hdf5/serial/ 	#Additional include paths
-INC += -I /usr/include/cubature-1.0.2/  
 
 #--------------------------------------Targets ------------------------------------------
 $(TARGET): $(OBJECTS)

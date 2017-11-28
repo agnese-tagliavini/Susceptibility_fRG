@@ -18,7 +18,7 @@ const double LN_10 = 2.30258509299;				///< Natural log of 10
 const double CHOP_ERR = 1E-16; 					///< chopping sets cosine, sine and weight to zero under this value
 
 
-const int COUNT = 2; 
+const int COUNT = 4; 
 
 // ----- SE dimensions
 
@@ -43,7 +43,7 @@ const int BFREQ_COUNT_P = 2 * POS_BFREQ_COUNT_P + 1;		///< Amount of bosonic fre
 
 // ----- internal integration range and green function grid
 
-const int POS_INT_RANGE = 4 * FFREQ_COUNT_SIG;			///< Positive range for internal integrations
+const int POS_INT_RANGE = 4* FFREQ_COUNT_SIG; // 4*		///< Positive range for internal integrations
 const int TAIL_LENGTH = POS_INT_RANGE / 5; 			///< Length of tail used for fitting matsubara sum
 const int FIT_ORDER = 4; 					///< Fit tail function has exponents one lower than this constant
 
@@ -51,6 +51,13 @@ const int FIT_ORDER = 4; 					///< Fit tail function has exponents one lower tha
 
 const int POS_BFREQ_COUNT_CHI = 2 * POS_INT_RANGE; // !!! DECREASED FOR ffcount=7      2 * POS_INT_RANGE; 		///< Amount of positive bosonic frequencies in chi grid
 const int BFREQ_COUNT_CHI = 2 * POS_BFREQ_COUNT_CHI + 1;	///< Amount of bosonic frequencies in chi grid
+
+
+const int POS_FFREQ_COUNT_TRI = 4 * COUNT; 
+const int FFREQ_COUNT_TRI = 2 * POS_FFREQ_COUNT_TRI; 
+
+const int POS_BFREQ_COUNT_TRI = 8 * COUNT; 
+const int BFREQ_COUNT_TRI = 2 * POS_BFREQ_COUNT_TRI + 1; 
 
 const int POS_BFREQ_COUNT_SUSCEPT = 8 * COUNT; 
 const int BFREQ_COUNT_SUSCEPT = 2 * POS_BFREQ_COUNT_SUSCEPT + 1; 
@@ -62,7 +69,7 @@ const int POS_1P_RANGE = POS_BFREQ_COUNT_SUSCEPT + POS_INT_RANGE; 	///< Positive
 
 // ----- Output ranges
 
-const int POS_PLOT_RANGE_PHI = 1.2 * POS_FFREQ_COUNT_PHI; 	///< Amount of positive frequencies in phi output grid
+const int POS_PLOT_RANGE_PHI = 3.0 * POS_FFREQ_COUNT_PHI; 	///< Amount of positive frequencies in phi output grid
 const int POS_PLOT_RANGE_VERT = POS_PLOT_RANGE_PHI; 		///< Amount of positive frequencies in vertex output grid
 
 
@@ -101,7 +108,8 @@ const int FFREAL_DIM = 1;                                       ///< Adjust acco
 const int REAL_GRID = 1; 
 const int MAX_PROJ_R_GRID = 0; 
 #endif
-const int FFT_DIM = 16; 					///< Dimension of the FFT grid in every directions
+
+const int FFT_DIM = 16; 	///< Dimension of the FFT grid in every directions
 
 #endif
 

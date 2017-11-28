@@ -28,6 +28,32 @@ symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_singl( gf_suscept_t(), { hmirror_
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_dens(  gf_suscept_t(),{ hmirror_suscept_ph, cconj_suscept_ph, timerev_suscept_ph,  rot_pi2_z_suscept, mirror_y_suscept}); 
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_mag(   gf_suscept_t(),{ hmirror_suscept_xph, cconj_suscept_xph, timerev_suscept_xph, rot_pi2_z_suscept, mirror_y_suscept}); 
 
+symmetry_grp_t<dcomplex,6> rhs_t::symm_grp_chi_pp( gf_chi_t(), { 
+      hmirror_chi_pp
+      , cconj_chi_pp
+      , timerev_chi_pp
+      , rot_pi2_z_chi
+      , mirror_y_chi
+      } ); 
+symmetry_grp_t<dcomplex,6> rhs_t::symm_grp_chi_ph( gf_chi_t(), { 
+      hmirror_chi_ph
+      , cconj_chi_ph
+      , timerev_chi_ph
+      , rot_pi2_z_chi
+      , mirror_y_chi
+      } ); 
+symmetry_grp_t<dcomplex,6> rhs_t::symm_grp_chi_xph( gf_chi_t(), { 
+      hmirror_chi_xph
+      , cconj_chi_xph
+      , timerev_chi_xph 
+      , rot_pi2_z_chi
+      , mirror_y_chi
+      } ); 
+
+symmetry_grp_t<dcomplex,9> rhs_t::symm_grp_tri_sc( gf_tri_t(), { });
+symmetry_grp_t<dcomplex,9> rhs_t::symm_grp_tri_dens(  gf_tri_t(),{ }); 
+symmetry_grp_t<dcomplex,9> rhs_t::symm_grp_tri_mag(   gf_tri_t(),{ }); 
+
 symmetry_grp_t<MatReal,3> rhs_t::symm_grp_Gvec_real(gf_1p_mat_real_t(),{});
 
 symmetry_grp_t<MatPatch,8> rhs_t::symm_grp_bubble_pp(gf_bubble_mat_t(),{swap_bubble, cconj_bubble, hmirror_bubble_pp});
@@ -89,6 +115,22 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
    symm_grp_chi_dens.init( dfdl.gf_suscept_d(),     [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_suscept_d( idx, state_vec, bubble_ph ); } ); 
    cout << " ... Magnetic " << endl;
    symm_grp_chi_mag.init( dfdl.gf_suscept_m(),      [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_suscept_m( idx, state_vec, bubble_ph ); } ); 
+   
+   cout << " ... trileg asymptotics " << endl;
+   cout << " ... Sc " << endl;
+   symm_grp_chi_pp.init( dfdl.gf_asytri_sc(),    [&state_vec, &bubble_pp]( const idx_chi_t& idx ){ return eval_diag_tri_sc( iasy_to_itri(idx), state_vec, bubble_pp ) - double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   cout << " ... Density " << endl;
+   symm_grp_chi_ph.init( dfdl.gf_asytri_d(),     [&state_vec, &bubble_ph]( const idx_chi_t& idx ){ return eval_diag_tri_d( iasy_to_itri(idx), state_vec, bubble_ph )- double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   cout << " ... Magnetic " << endl;
+   symm_grp_chi_xph.init( dfdl.gf_asytri_m(),      [&state_vec, &bubble_ph]( const idx_chi_t& idx ){ return eval_diag_tri_m( iasy_to_itri(idx), state_vec, bubble_ph )- double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   
+   cout << " ... trileg " << endl;
+   cout << " ... Sc " << endl;
+   symm_grp_tri_sc.init( dfdl.gf_tri_sc(),    [&state_vec, &bubble_pp]( const idx_tri_t& idx ){ return eval_diag_tri_sc( idx, state_vec, bubble_pp ); } ); 
+   cout << " ... Density " << endl;
+   symm_grp_tri_dens.init( dfdl.gf_tri_d(),     [&state_vec, &bubble_ph]( const idx_tri_t& idx ){ return eval_diag_tri_d( idx, state_vec, bubble_ph ); } ); 
+   cout << " ... Magnetic " << endl;
+   symm_grp_tri_mag.init( dfdl.gf_tri_m(),      [&state_vec, &bubble_ph]( const idx_tri_t& idx ){ return eval_diag_tri_m( idx, state_vec, bubble_ph ); } ); 
 
 }
 
@@ -232,21 +274,21 @@ dcomplex rhs_t::eval_diag_suscept_trip( const idx_suscept_t& idx, const state_t&
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-//	       	       {
-//	       		val += 0.5/BETA/BETA/4.0/PI/PI	* // Two pairs of equivalent lines -> Factor 1/4
-//			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-//			    state_vec.vertx_t( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-//	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-//			    weight_vec_2d[w][wp];
-//	       	       }
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+	       	       {
+	       		val += 0.5/BETA/BETA/4.0/PI/PI	* // Two pairs of equivalent lines -> Factor 1/4
+			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+			    state_vec.vertx_t( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+			    weight_vec_2d[w][wp];
+	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val += 1.0/BETA *	//Two equivalent lines -> factor 1/2
@@ -274,21 +316,21 @@ dcomplex rhs_t::eval_diag_suscept_s( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-//	       	       {
-//	       		val += 0.5/BETA/BETA/4.0/PI/PI	 * // Two pairs of equivalent lines -> Factor 1/4
-//			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-//			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-//	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-//			    weight_vec_2d[w][wp];
-//	       	       }
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+	       	       {
+	       		val += 0.5/BETA/BETA/4.0/PI/PI	 * // Two pairs of equivalent lines -> Factor 1/4
+			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+			    weight_vec_2d[w][wp];
+	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val += 1.0/BETA * // Two equivalent lines -> factor 1/2
@@ -316,22 +358,22 @@ dcomplex rhs_t::eval_diag_suscept_d( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-//	       	       {
-//			//cout << "sum" << endl;  
-//	       		val += 1.0/BETA/BETA/4.0/PI/PI	 * //Two internal loops
-//			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-//			    state_vec.vertx_d( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-//	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-//			    weight_vec_2d[w][wp];
-//	       	       }
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+	       	       {
+			//cout << "sum" << endl;  
+	       		val += 1.0/BETA/BETA/4.0/PI/PI	 * //Two internal loops
+			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+			    state_vec.vertx_d( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+			    weight_vec_2d[w][wp];
+	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val -= 1/BETA * // One internal loop
@@ -359,21 +401,21 @@ dcomplex rhs_t::eval_diag_suscept_m( const idx_suscept_t& idx, const state_t& st
    int s1_out = idx( ISUSC::s1_out );
    int s2_out = idx( ISUSC::s2_out );
    
-//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-//	       	       {
-//	       		val += 1.0/BETA/BETA/4.0/PI/PI *
-//			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-//			    state_vec.vertx_m( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-//	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-//			    weight_vec_2d[w][wp];
-//	       	       }
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+	       	       {
+	       		val += 1.0/BETA/BETA/4.0/PI/PI *
+			    bubble_ph[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+			    state_vec.vertx_m( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+	       		    bubble_ph[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+			    weight_vec_2d[w][wp];
+	       	       }
    for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
    {
       val -= 1/BETA * // One internal loop
@@ -384,3 +426,129 @@ dcomplex rhs_t::eval_diag_suscept_m( const idx_suscept_t& idx, const state_t& st
    return val; 
 }
 
+
+dcomplex rhs_t::eval_diag_tri_sc( const idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp)
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   // Introduce help variables
+   int W    = idx( ITRI::W );
+   int w_in = idx( ITRI::w );
+
+   int K = idx( ITRI::K );
+
+   int n_in  = idx( ITRI::n_in);
+   int n_out = idx( ITRI::n_out);
+
+   int s1_in = idx(  ITRI::s1_in );
+   int s2_in = idx(  ITRI::s2_in );
+   int s1_out = idx( ITRI::s1_out );
+   int s2_out = idx( ITRI::s2_out );
+   
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp ){
+		     for( int w = -POS_INT_RANGE- abs(W/2) - (W+100000) % 2; w < POS_INT_RANGE + abs(W/2); ++w )
+	       	       {
+	       		val += 1.0/BETA/4.0/PI/PI * // Two pairs of equivalent lines -> Factor 1/4
+			    tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+			    bubble_pp[W][w][m][mp][s4][s4p][s3][s3p](K) * 
+			    state_vec.vertx_pp( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out );
+		       } 
+			int w = POS_INT_RANGE + abs(W/2);
+	      		val += 1.0/4.0/PI/PI * double(s3 == s3p) * double(s4 == s4p) * double(m == mp) * asympt_GG_pp( W ) *
+ 				tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+				state_vec.vertx_pp( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out );		
+			    //weight_vec[w];
+	       	       }
+   
+   return val + double(n_in == n_out); 
+}
+
+dcomplex rhs_t::eval_diag_tri_d( const idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph)
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   // Introduce help variables
+   int W    = idx( ITRI::W );
+   int w_in = idx( ITRI::w );
+
+   int K = idx( ITRI::K );
+
+   int n_in  = idx( ITRI::n_in);
+   int n_out = idx( ITRI::n_out);
+
+   int s1_in = idx(  ITRI::s1_in );
+   int s2_in = idx(  ITRI::s2_in );
+   int s1_out = idx( ITRI::s1_out );
+   int s2_out = idx( ITRI::s2_out );
+   
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp ){
+		     for( int w = -POS_INT_RANGE - abs(W/2) - (W + 100000) % 2; w < POS_INT_RANGE+ abs(W/2); ++w )
+	       	       {
+	       		val -= 1.0/BETA/4.0/PI/PI * // Two pairs of equivalent lines -> Factor 1/4
+			    tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+			    bubble_ph[W][w][m][mp][s4][s4p][s3][s3p](K) * 
+			    state_vec.vertx_d( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out ); 
+		       }
+			int w = POS_INT_RANGE + abs(W/2);
+	      		val -= 1.0/4.0/PI/PI * double(s3 == s3p) * double(s4 == s4p) * double(m == mp) * asympt_GG_ph( W ) *
+ 				tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+				state_vec.vertx_d( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out );		
+			    //weight_vec[w];
+	       	       }
+
+
+   return val + double(n_in == n_out); 
+}
+
+dcomplex rhs_t::eval_diag_tri_m( const idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph)
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   // Introduce help variables
+   int W    = idx( ITRI::W );
+   int w_in = idx( ITRI::w );
+
+   int K = idx( ITRI::K );
+
+   int n_in  = idx( ITRI::n_in);
+   int n_out = idx( ITRI::n_out);
+
+   int s1_in = idx(  ITRI::s1_in );
+   int s2_in = idx(  ITRI::s2_in );
+   int s1_out = idx( ITRI::s1_out );
+   int s2_out = idx( ITRI::s2_out );
+   
+   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp ){
+		     for( int w = -POS_INT_RANGE-abs(W/2)-(W + 100000) % 2; w < POS_INT_RANGE + abs(W/2); ++w )
+	       	       {
+	       		val -= 1.0/BETA/4.0/PI/PI * // Two pairs of equivalent lines -> Factor 1/4
+			    tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+			    bubble_ph[W][w][m][mp][s4][s4p][s3][s3p](K) * 
+			    state_vec.vertx_m( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out );
+		       }
+		       
+		        int w = POS_INT_RANGE + abs(W/2);
+	      		val -= 1.0/4.0/PI/PI * double(s3 == s3p) * double(s4 == s4p) * double(m == mp) * asympt_GG_ph( W ) *
+ 				tri_bare(n_in, m, s1_in, s2_in, s3p, s4p) *
+				state_vec.vertx_m( W, w, w_in, K, mp, n_out, s3, s4, s1_out, s2_out );		
+			    //weight_vec[w];
+	       	       }
+
+
+   return val + double(n_in == n_out); 
+}

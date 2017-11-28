@@ -110,3 +110,99 @@ void write_suscept_func( H5File& file, const state_t& state_vec )
    write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
 }
 
+void write_tri_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/tri_func") );
+
+   write( state_vec.gf_tri_sc(), group, "_SC" ); 
+   write( state_vec.gf_tri_d(), group, "_DENSITY" ); 
+   write( state_vec.gf_tri_m(), group, "_MAGNETIC" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_TRI, 2.0*PI / BETA ), group );
+   write( F_Grid( POS_FFREQ_COUNT_TRI, 2.0*PI / BETA ), group );
+}
+
+void write_asytri_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/asytri_func") );
+
+   write( state_vec.gf_asytri_sc(), group, "_SC" ); 
+   write( state_vec.gf_asytri_d(), group, "_DENSITY" ); 
+   write( state_vec.gf_asytri_m(), group, "_MAGNETIC" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_CHI, 2.0*PI / BETA ), group );
+}
+
+void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/Sig") );
+   write( state_vec.gf_Sig(), group ); 
+   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
+}
+
+
+void write_vert_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/vert_func") );
+
+   gf_phi_t gf_vert_pp_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+   gf_phi_t gf_vert_ph_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+   gf_phi_t gf_vert_xph_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+
+   gf_vert_pp_plot.init( bind( &state_t::vertx_pp, boost::cref(state_vec), _1 ) ); 
+   gf_vert_ph_plot.init( bind( &state_t::vertx_ph, boost::cref(state_vec), _1 ) ); 
+   gf_vert_xph_plot.init( bind( &state_t::vertx_xph, boost::cref(state_vec), _1 ) ); 
+
+   write( gf_vert_pp_plot, group, "_PP" ); 
+   write( gf_vert_ph_plot, group, "_PH" ); 
+   write( gf_vert_xph_plot, group, "_XPH" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_PHI, 2.0*PI / BETA ), group );
+   write( F_Grid( POS_PLOT_RANGE_PHI, 2.0*PI / BETA ), group );
+
+}
+
+void write_phi_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/phi_func") );
+
+   gf_phi_t gf_phi_pp_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+   gf_phi_t gf_phi_ph_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+   gf_phi_t gf_phi_xph_plot( POS_BFREQ_COUNT_PHI, POS_PLOT_RANGE_PHI ); 
+
+   gf_phi_pp_plot.init( bind( &state_t::phi_pp, boost::cref(state_vec), _1 ) ); 
+   gf_phi_ph_plot.init( bind( &state_t::phi_ph, boost::cref(state_vec), _1 ) ); 
+   gf_phi_xph_plot.init( bind( &state_t::phi_xph, boost::cref(state_vec), _1 ) ); 
+
+   write( gf_phi_pp_plot, group, "_PP" ); 
+   write( gf_phi_ph_plot, group, "_PH" ); 
+   write( gf_phi_xph_plot, group, "_XPH" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_PHI, 2.0*PI / BETA ), group );
+   write( F_Grid( POS_PLOT_RANGE_PHI, 2.0*PI / BETA ), group );
+
+}
+
+void write_chi_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/chi_func") );
+
+   write( state_vec.gf_chi_pp(), group, "_PP" ); 
+   write( state_vec.gf_chi_ph(), group, "_PH" ); 
+   write( state_vec.gf_chi_xph(), group, "_XPH" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_CHI, 2.0*PI / BETA ), group );
+}
+
+void write_P_func( H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/P_func") );
+
+   write( state_vec.gf_P_pp(), group, "_PP" ); 
+   write( state_vec.gf_P_ph(), group, "_PH" ); 
+   write( state_vec.gf_P_xph(), group, "_XPH" ); 
+
+   write( Bos_Grid( POS_BFREQ_COUNT_P, 2.0*PI / BETA ), group );
+   write( F_Grid( POS_FFREQ_COUNT_P, 2.0*PI / BETA ), group );
+}
+

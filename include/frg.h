@@ -58,6 +58,9 @@ dcomplex suscept_init_s( const idx_suscept_t& idx );				///< Return initial vert
 dcomplex suscept_init_d( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
 dcomplex suscept_init_m( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
 
+dcomplex tri_init( const idx_tri_t& idx );				///< Return initial vertex value for chiasch functions
+dcomplex tri_bare( int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out);				///< Return initial vertex value for chiasch functions
+
 dcomplex asympt_GG_pp( int W );	///< Give estimate for the integral 1/2/PI * G(W/2-w-1,Lam) * G(W/2+w,Lam) for the outside region N \ [ -POS_INT_RANGE, POS_INT_RANGE )
 dcomplex asympt_GG_ph( int W );	///< Give estimate for the integral 1/2/PI * G(w-W/2,Lam) * G(w+W/2,Lam) for the outside region N \ [ -POS_INT_RANGE, POS_INT_RANGE )
 

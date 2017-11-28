@@ -25,6 +25,10 @@ class rhs_t 		///< Functor to specify the rhs calculation for both the self-ener
       static dcomplex eval_diag_suscept_s( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp );		///< Calculate particle-hole diagram for the flow
       static dcomplex eval_diag_suscept_d( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph );		///< Calculate particle-hole diagram for the flow
       static dcomplex eval_diag_suscept_m( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph );		///< Calculate particle-hole diagram for the flow
+      
+      static dcomplex eval_diag_tri_sc( const    idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp );		///< Calculate particle-hole diagram for the flow
+      static dcomplex eval_diag_tri_d( const    idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph );		///< Calculate particle-hole diagram for the flow
+      static dcomplex eval_diag_tri_m( const    idx_tri_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph );		///< Calculate particle-hole diagram for the flow
 
       static MatPatch eval_diag_bubble_pp( const idx_bubble_mat_t& idx, const gf_1p_mat_real_t& Gvec_real, fftw_plan p_b );		///< Calculate particle-hole diagram for the flow
       static MatPatch eval_diag_bubble_ph( const idx_bubble_mat_t& idx, const gf_1p_mat_real_t& Gvec_real, fftw_plan p_b );		///< Calculate particle-hole diagram for the flow
@@ -36,6 +40,14 @@ class rhs_t 		///< Functor to specify the rhs calculation for both the self-ener
       static symmetry_grp_t<dcomplex,8> symm_grp_chi_singl; 
       static symmetry_grp_t<dcomplex,8> symm_grp_chi_dens; 
       static symmetry_grp_t<dcomplex,8> symm_grp_chi_mag; 
+      
+      static symmetry_grp_t<dcomplex,6> symm_grp_chi_pp; 
+      static symmetry_grp_t<dcomplex,6> symm_grp_chi_ph; 
+      static symmetry_grp_t<dcomplex,6> symm_grp_chi_xph; 
+      
+      static symmetry_grp_t<dcomplex,9> symm_grp_tri_sc; 
+      static symmetry_grp_t<dcomplex,9> symm_grp_tri_dens; 
+      static symmetry_grp_t<dcomplex,9> symm_grp_tri_mag; 
       
       
       static symmetry_grp_t<MatPatch,8> symm_grp_bubble_pp;

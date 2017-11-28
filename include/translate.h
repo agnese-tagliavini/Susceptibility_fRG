@@ -16,7 +16,7 @@
 idx_phi_t iP_to_iphi( const idx_P_t& idx ); 
 idx_P_t iphi_to_iP( const idx_phi_t& idx ); 
 idx_phi_t ichi_to_iphi( const idx_chi_t& idx ); 
-idx_chi_t iP_to_ichi( const idx_P_t& idx ); 
+idx_tri_t iasy_to_itri( const idx_chi_t& idx ); 
 
 
 /********************* Translations between different notations  ********************/

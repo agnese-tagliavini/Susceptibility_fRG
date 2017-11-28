@@ -152,6 +152,21 @@ class gf_chi_t : public gf< dcomplex, 6 > 		///< Container type for two-particle
 }; 
 using idx_chi_t = gf_chi_t::idx_t; 
 
+enum class ITRI{ W, w, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out }; 
+class gf_tri_t : public gf< dcomplex, 9 > 		///< Container type for two-particle correlation functions
+{
+   public:
+      using base_t = gf< dcomplex, 9 >; 
+
+      gf_tri_t( int pos_bfreq_count = POS_BFREQ_COUNT_TRI, int pos_ffreq_count = POS_FFREQ_COUNT_TRI ):
+	 base_t( boost::extents[bfreq(pos_bfreq_count)][ffreq(pos_ffreq_count)]
+	       [PATCH_COUNT][FFACTOR_COUNT][FFACTOR_COUNT]
+	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
+   {}
+      INSERT_COPY_AND_ASSIGN(gf_tri_t)
+}; 
+using idx_tri_t = gf_tri_t::idx_t; 
+
 enum class ISUSC{ W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out }; 
 class gf_suscept_t : public gf< dcomplex, 8 > 		///< Container type for two-particle correlation functions
 {
