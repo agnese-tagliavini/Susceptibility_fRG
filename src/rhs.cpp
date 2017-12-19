@@ -23,8 +23,8 @@ using boost::bind;
 
 // ALL SYMM
 
-symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_tripl( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
-symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_singl( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
+symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_sc( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
+//symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_singl( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_dens(  gf_suscept_t(),{ hmirror_suscept_ph, cconj_suscept_ph, timerev_suscept_ph,  rot_pi2_z_suscept, mirror_y_suscept}); 
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_mag(   gf_suscept_t(),{ hmirror_suscept_xph, cconj_suscept_xph, timerev_suscept_xph, rot_pi2_z_suscept, mirror_y_suscept}); 
 
@@ -107,10 +107,10 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
 
    // --- Conventional flow
    cout << " ... susceptibilities " << endl;
-   cout << " ... Triplet " << endl;
-   symm_grp_chi_tripl.init( dfdl.gf_suscept_trip(), [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_trip( idx, state_vec, bubble_pp ); } ); 
-   cout << " ... Singlet " << endl;
-   symm_grp_chi_singl.init( dfdl.gf_suscept_s(),    [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_s( idx, state_vec, bubble_pp ); } ); 
+   cout << " ... SC " << endl;
+   symm_grp_chi_sc.init( dfdl.gf_suscept_sc(), [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_sc( idx, state_vec, bubble_pp ); } ); 
+   //cout << " ... Singlet " << endl;
+   //symm_grp_chi_singl.init( dfdl.gf_suscept_s(),    [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_s( idx, state_vec, bubble_pp ); } ); 
    cout << " ... Density " << endl;
    symm_grp_chi_dens.init( dfdl.gf_suscept_d(),     [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_suscept_d( idx, state_vec, bubble_ph ); } ); 
    cout << " ... Magnetic " << endl;
@@ -118,11 +118,11 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
    
    cout << " ... trileg asymptotics " << endl;
    cout << " ... Sc " << endl;
-   symm_grp_chi_pp.init( dfdl.gf_asytri_sc(),    [&state_vec, &bubble_pp]( const idx_chi_t& idx ){ return eval_diag_tri_sc( iasy_to_itri(idx), state_vec, bubble_pp ) - double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   symm_grp_chi_sc.init( dfdl.gf_asytri_sc(),    [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_tri_sc( iasy_to_itri(idx), state_vec, bubble_pp ); } ); 
    cout << " ... Density " << endl;
-   symm_grp_chi_ph.init( dfdl.gf_asytri_d(),     [&state_vec, &bubble_ph]( const idx_chi_t& idx ){ return eval_diag_tri_d( iasy_to_itri(idx), state_vec, bubble_ph )- double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   symm_grp_chi_dens.init( dfdl.gf_asytri_d(),     [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_tri_d( iasy_to_itri(idx), state_vec, bubble_ph ); } ); 
    cout << " ... Magnetic " << endl;
-   symm_grp_chi_xph.init( dfdl.gf_asytri_m(),      [&state_vec, &bubble_ph]( const idx_chi_t& idx ){ return eval_diag_tri_m( iasy_to_itri(idx), state_vec, bubble_ph )- double(idx(ITRI::n_in) == idx(ITRI::n_out)); } ); 
+   symm_grp_chi_mag.init( dfdl.gf_asytri_m(),      [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_tri_m( iasy_to_itri(idx), state_vec, bubble_ph ); } ); 
    
    cout << " ... trileg " << endl;
    cout << " ... Sc " << endl;
@@ -257,7 +257,7 @@ MatPatch rhs_t::eval_diag_bubble_ph( const idx_bubble_mat_t& idx, const gf_1p_ma
 }
 
 
-dcomplex rhs_t::eval_diag_suscept_trip( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp)
+dcomplex rhs_t::eval_diag_suscept_sc( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp)
 {
    dcomplex val( 0.0, 0.0 );
 
@@ -283,9 +283,9 @@ dcomplex rhs_t::eval_diag_suscept_trip( const idx_suscept_t& idx, const state_t&
 		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
 		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
 	       	       {
-	       		val += 0.5/BETA/BETA/4.0/PI/PI	* // Two pairs of equivalent lines -> Factor 1/4
+	       		val += 1.0/BETA/BETA/4.0/PI/PI	* // Two pairs of equivalent lines -> Factor 1/4
 			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_t( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+			    state_vec.vertx_pp( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
 	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
 			    weight_vec_2d[w][wp];
 	       	       }
@@ -299,48 +299,48 @@ dcomplex rhs_t::eval_diag_suscept_trip( const idx_suscept_t& idx, const state_t&
    return val; 
 }
 
-dcomplex rhs_t::eval_diag_suscept_s( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp)
-{
-   dcomplex val( 0.0, 0.0 );
-
-   // Introduce help variables
-   int W = idx( ISUSC::W );
-
-   int K = idx( ISUSC::K );
-   
-   int n_in = idx( ISUSC::n_in);
-   int n_out = idx( ISUSC::n_out);
-
-   int s1_in = idx( ISUSC::s1_in );
-   int s2_in = idx( ISUSC::s2_in );
-   int s1_out = idx( ISUSC::s1_out );
-   int s2_out = idx( ISUSC::s2_out );
-   
-   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
-      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
-	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
-	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
-	       for( int m = 0; m < FFACTOR_COUNT; ++m )
-		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
-		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
-	       	       {
-	       		val += 0.5/BETA/BETA/4.0/PI/PI	 * // Two pairs of equivalent lines -> Factor 1/4
-			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
-			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
-	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
-			    weight_vec_2d[w][wp];
-	       	       }
-   for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
-   {
-      val += 1.0/BETA * // Two equivalent lines -> factor 1/2
-	 bubble_pp[W][w][n_in][n_out][s2_out][s2_in][s1_out][s1_in](K) *
-	 weight_vec[w];
-   }
-
-   return val; 
-}
-
+//dcomplex rhs_t::eval_diag_suscept_s( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_pp)
+//{
+//   dcomplex val( 0.0, 0.0 );
+//
+//   // Introduce help variables
+//   int W = idx( ISUSC::W );
+//
+//   int K = idx( ISUSC::K );
+//   
+//   int n_in = idx( ISUSC::n_in);
+//   int n_out = idx( ISUSC::n_out);
+//
+//   int s1_in = idx( ISUSC::s1_in );
+//   int s2_in = idx( ISUSC::s2_in );
+//   int s1_out = idx( ISUSC::s1_out );
+//   int s2_out = idx( ISUSC::s2_out );
+//   
+//   for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+//      for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+//	 for( int s4 = 0; s4 < QN_COUNT; ++s4 )
+//	    for( int s4p = 0; s4p < QN_COUNT; ++s4p )
+//	       for( int m = 0; m < FFACTOR_COUNT; ++m )
+//		  for( int mp = 0; mp < FFACTOR_COUNT; ++mp )
+//		     for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//		       for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp )
+//	       	       {
+//	       		val += 0.5/BETA/BETA/4.0/PI/PI	 * // Two pairs of equivalent lines -> Factor 1/4
+//			    bubble_pp[W][w][n_in][mp][s4][s2_in][s3][s1_in](K) * 
+//			    state_vec.vertx_s( W, w, wp, K, mp, m, s3, s4, s3p, s4p ) *  
+//	       		    bubble_pp[W][wp][m][n_out][s2_out][s4p][s1_out][s3p](K) *
+//			    weight_vec_2d[w][wp];
+//	       	       }
+//   for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+//   {
+//      val += 1.0/BETA * // Two equivalent lines -> factor 1/2
+//	 bubble_pp[W][w][n_in][n_out][s2_out][s2_in][s1_out][s1_in](K) *
+//	 weight_vec[w];
+//   }
+//
+//   return val; 
+//}
+//
 dcomplex rhs_t::eval_diag_suscept_d( const idx_suscept_t& idx, const state_t& state_vec, const gf_bubble_mat_t& bubble_ph)
 {
    dcomplex val( 0.0, 0.0 );

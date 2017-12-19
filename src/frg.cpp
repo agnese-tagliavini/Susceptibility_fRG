@@ -52,7 +52,7 @@ gf_1p_t gf_Sig_read(POS_SIG_IN);
 void read_exact()
 {
    using namespace H5;
-   H5File input_file( "dat/dat_U2_Beta5_PFCB256_HUB_OMFL_SU2_2D_4PISYMM_mkp2_ONLY_K_SYMM_WITHSE.h5", H5F_ACC_RDONLY );
+   H5File input_file( "/home/agnese/Coding/fRG_code/2D/fRGdyn/dat/U2_B5/RES_FUNC_SCHEMES/8LOOP/dat_U2_Beta5_PFCB256_HUB_OMFL_KAT_2LOOP_MLOOP_RESFUNC_NUMLOOP8_SECORR_SCHEME2_SU2_2D_4PISYMM_mkp2_ALLSYMM_WITHSE.h5", H5F_ACC_RDONLY );
 
    cout << "Got file" << endl;
 
@@ -328,12 +328,8 @@ dcomplex chi_init_xph( const idx_chi_t& idx ) // inital Karrasch functions in Na
 #endif
    return 0.0; // vanishes for weak coupling flows
 }
-dcomplex suscept_init_t( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
-{
-   return 0.0; // vanishes for weak coupling flows
-}
 
-dcomplex suscept_init_s( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
+dcomplex suscept_init_sc( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
 {
    return 0.0; // vanishes for weak coupling flows
 }

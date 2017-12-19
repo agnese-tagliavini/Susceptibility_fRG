@@ -63,7 +63,7 @@ int main ( int argc, char * argv[])
 
    state_vec.gf_phi_pp().init( phi_init_pp ); 
    state_vec.gf_phi_ph().init( phi_init_ph ); 
-   state_vec.gf_phi_xph().init( phi_init_xph ); 
+   state_vec.gf_phi_xph().init( phi_init_xph );
 
    state_vec.gf_P_pp().init( P_init_pp ); 
    state_vec.gf_P_ph().init( P_init_ph ); 
@@ -73,8 +73,7 @@ int main ( int argc, char * argv[])
    state_vec.gf_chi_ph().init( chi_init_ph ); 
    state_vec.gf_chi_xph().init( chi_init_xph );
 
-   state_vec.gf_suscept_trip().init( suscept_init_s ); 
-   state_vec.gf_suscept_s().init( suscept_init_s ); 
+   state_vec.gf_suscept_sc().init( suscept_init_sc ); 
    state_vec.gf_suscept_d().init( suscept_init_d );
    state_vec.gf_suscept_m().init( suscept_init_m );
    
@@ -127,8 +126,9 @@ int main ( int argc, char * argv[])
 
    FILE_NAME.append("_SU2"); 
    FILE_NAME.append("_2D");
+   FILE_NAME.append("_8LOOP");
 
-   FILE_NAME.append("_OMFL_NEWASYMPT_MATSUM.h5"); 
+   FILE_NAME.append("_OMFL.h5"); 
 
    //const H5std_string	FILE_NAME("dat/dat.h5");
    H5File file( FILE_NAME, H5F_ACC_TRUNC );
@@ -139,11 +139,11 @@ int main ( int argc, char * argv[])
    write_suscept_func( file, state_vec );
    write_tri_func( file, state_vec );
    write_asytri_func( file, state_vec );
-   write_Sig_tensor( file, state_vec );
-   write_vert_func( file, state_vec ); 
-   write_phi_func( file, state_vec ); 
-   write_chi_func( file, state_vec ); 
-   write_P_func( file, state_vec ); 
+   //write_Sig_tensor( file, state_vec );
+   //write_vert_func( file, state_vec ); 
+   //write_phi_func( file, state_vec ); 
+   //write_chi_func( file, state_vec ); 
+   //write_P_func( file, state_vec ); 
    
    return 0;
 

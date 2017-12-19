@@ -102,8 +102,7 @@ void write_suscept_func( H5File& file, const state_t& state_vec )
 {
    Group group( file.createGroup("/suscept_func") );
 
-   write( state_vec.gf_suscept_trip(), group, "_TRIPLET" ); 
-   write( state_vec.gf_suscept_s(), group, "_SINGLET" ); 
+   write( state_vec.gf_suscept_sc(), group, "_SC" ); 
    write( state_vec.gf_suscept_d(), group, "_DENSITY" ); 
    write( state_vec.gf_suscept_m(), group, "_MAGNETIC" ); 
 
@@ -130,7 +129,7 @@ void write_asytri_func( H5File& file, const state_t& state_vec )
    write( state_vec.gf_asytri_d(), group, "_DENSITY" ); 
    write( state_vec.gf_asytri_m(), group, "_MAGNETIC" ); 
 
-   write( Bos_Grid( POS_BFREQ_COUNT_CHI, 2.0*PI / BETA ), group );
+   write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
 }
 
 void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )

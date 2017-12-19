@@ -27,7 +27,7 @@ const int FFREQ_COUNT_SIG = 2 * POS_FFREQ_COUNT_SIG;		///< Amount of frequencies
 
 // ----- phi dimensions
 
-const int POS_FFREQ_COUNT_PHI = COUNT;				///< Amount of positive fermionic frequencies in phi grid 
+const int POS_FFREQ_COUNT_PHI = 3 * COUNT;				///< Amount of positive fermionic frequencies in phi grid 
 const int FFREQ_COUNT_PHI = 2 * POS_FFREQ_COUNT_PHI;		///< Amount of fermionic frequencies in phi grid
 
 const int POS_BFREQ_COUNT_PHI = 2 * COUNT; 			///< Amount of positive bosonic frequencies in phi grid 
@@ -43,7 +43,7 @@ const int BFREQ_COUNT_P = 2 * POS_BFREQ_COUNT_P + 1;		///< Amount of bosonic fre
 
 // ----- internal integration range and green function grid
 
-const int POS_INT_RANGE = 4* FFREQ_COUNT_SIG; // 4*		///< Positive range for internal integrations
+const int POS_INT_RANGE = 4 * FFREQ_COUNT_SIG; // 4*		///< Positive range for internal integrations
 const int TAIL_LENGTH = POS_INT_RANGE / 5; 			///< Length of tail used for fitting matsubara sum
 const int FIT_ORDER = 4; 					///< Fit tail function has exponents one lower than this constant
 
@@ -56,10 +56,10 @@ const int BFREQ_COUNT_CHI = 2 * POS_BFREQ_COUNT_CHI + 1;	///< Amount of bosonic 
 const int POS_FFREQ_COUNT_TRI = 4 * COUNT; 
 const int FFREQ_COUNT_TRI = 2 * POS_FFREQ_COUNT_TRI; 
 
-const int POS_BFREQ_COUNT_TRI = 8 * COUNT; 
+const int POS_BFREQ_COUNT_TRI = 6 * COUNT; 
 const int BFREQ_COUNT_TRI = 2 * POS_BFREQ_COUNT_TRI + 1; 
 
-const int POS_BFREQ_COUNT_SUSCEPT = 8 * COUNT; 
+const int POS_BFREQ_COUNT_SUSCEPT = 6 * COUNT; 
 const int BFREQ_COUNT_SUSCEPT = 2 * POS_BFREQ_COUNT_SUSCEPT + 1; 
 
 
@@ -69,7 +69,7 @@ const int POS_1P_RANGE = POS_BFREQ_COUNT_SUSCEPT + POS_INT_RANGE; 	///< Positive
 
 // ----- Output ranges
 
-const int POS_PLOT_RANGE_PHI = 3.0 * POS_FFREQ_COUNT_PHI; 	///< Amount of positive frequencies in phi output grid
+const int POS_PLOT_RANGE_PHI = 1.0 * POS_FFREQ_COUNT_PHI; 	///< Amount of positive frequencies in phi output grid
 const int POS_PLOT_RANGE_VERT = POS_PLOT_RANGE_PHI; 		///< Amount of positive frequencies in vertex output grid
 
 

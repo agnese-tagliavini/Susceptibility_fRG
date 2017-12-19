@@ -53,8 +53,7 @@ dcomplex chi_init_pp( const idx_chi_t& idx );				///< Return initial vertex valu
 dcomplex chi_init_ph( const idx_chi_t& idx );				///< Return initial vertex value for chiasch functions
 dcomplex chi_init_xph( const idx_chi_t& idx );				///< Return initial vertex value for chiasch functions
 
-dcomplex suscept_init_t( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
-dcomplex suscept_init_s( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
+dcomplex suscept_init_sc( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
 dcomplex suscept_init_d( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
 dcomplex suscept_init_m( const idx_suscept_t& idx );				///< Return initial vertex value for chiasch functions
 
