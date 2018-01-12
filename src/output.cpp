@@ -100,22 +100,22 @@ vector<pair<string, double>> par_lst =
 
 void write_suscept_func( H5File& file, const state_t& state_vec )
 {
-   Group group( file.createGroup("/suscept_func") );
+   Group group( file.createGroup("/susc_func") );
 
    write( state_vec.gf_suscept_sc(), group, "_SC" ); 
-   write( state_vec.gf_suscept_d(), group, "_DENSITY" ); 
-   write( state_vec.gf_suscept_m(), group, "_MAGNETIC" ); 
+   write( state_vec.gf_suscept_d(), group, "_D" ); 
+   write( state_vec.gf_suscept_m(), group, "_M" ); 
 
    write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
 }
 
 void write_tri_func( H5File& file, const state_t& state_vec )
 {
-   Group group( file.createGroup("/tri_func") );
+   Group group( file.createGroup("/Tri_func") );
 
    write( state_vec.gf_tri_sc(), group, "_SC" ); 
-   write( state_vec.gf_tri_d(), group, "_DENSITY" ); 
-   write( state_vec.gf_tri_m(), group, "_MAGNETIC" ); 
+   write( state_vec.gf_tri_d(), group, "_D" ); 
+   write( state_vec.gf_tri_m(), group, "_M" ); 
 
    write( Bos_Grid( POS_BFREQ_COUNT_TRI, 2.0*PI / BETA ), group );
    write( F_Grid( POS_FFREQ_COUNT_TRI, 2.0*PI / BETA ), group );
@@ -126,8 +126,8 @@ void write_asytri_func( H5File& file, const state_t& state_vec )
    Group group( file.createGroup("/asytri_func") );
 
    write( state_vec.gf_asytri_sc(), group, "_SC" ); 
-   write( state_vec.gf_asytri_d(), group, "_DENSITY" ); 
-   write( state_vec.gf_asytri_m(), group, "_MAGNETIC" ); 
+   write( state_vec.gf_asytri_d(), group, "_D" ); 
+   write( state_vec.gf_asytri_m(), group, "_M" ); 
 
    write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
 }

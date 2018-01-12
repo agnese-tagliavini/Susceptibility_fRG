@@ -317,7 +317,7 @@ dcomplex state_t::tri_sc( int W, int w, int K, int n_in, int n_out, int s1_in, i
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
         W < -POS_BFREQ_COUNT_TRI || W > POS_BFREQ_COUNT_TRI )
-       return   asytri_sc(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
+       return  tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_sc(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
 
    return gf_tri_sc()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
@@ -327,7 +327,7 @@ dcomplex state_t::tri_d( int W, int w, int K, int n_in, int n_out, int s1_in, in
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
        W < -POS_BFREQ_COUNT_TRI  || W > POS_BFREQ_COUNT_TRI )
-       return asytri_d(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_d(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
  
    return gf_tri_d()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
@@ -336,7 +336,7 @@ dcomplex state_t::tri_m( int W, int w, int K, int n_in, int n_out, int s1_in, in
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
         W < -POS_BFREQ_COUNT_TRI || W > POS_BFREQ_COUNT_TRI )
-       return asytri_m(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out ); 
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_m(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out ); 
 
    return gf_tri_m()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }

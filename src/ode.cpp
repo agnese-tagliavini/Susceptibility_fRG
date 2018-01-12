@@ -80,6 +80,10 @@ int main ( int argc, char * argv[])
    state_vec.gf_tri_sc().init( tri_init ); 
    state_vec.gf_tri_d().init( tri_init );
    state_vec.gf_tri_m().init( tri_init );
+   
+   state_vec.gf_asytri_sc().init( suscept_init_sc ); 
+   state_vec.gf_asytri_d().init( suscept_init_sc );
+   state_vec.gf_asytri_m().init( suscept_init_sc );
 
 
 /************************** CALC SUSCEPTIBILITIES **************************************/
