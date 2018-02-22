@@ -18,7 +18,7 @@ const double LN_10 = 2.30258509299;				///< Natural log of 10
 const double CHOP_ERR = 1E-16; 					///< chopping sets cosine, sine and weight to zero under this value
 
 
-const int COUNT = 4; 
+const int COUNT = 2; 
 
 // ----- SE dimensions
 
@@ -65,7 +65,8 @@ const int BFREQ_COUNT_SUSCEPT = 2 * POS_BFREQ_COUNT_SUSCEPT + 1;
 
 // ----- Green function and single scale propagator dimension
 
-const int POS_1P_RANGE = POS_BFREQ_COUNT_SUSCEPT + POS_INT_RANGE; 	///< Positive range for Green functions and Single scale propagator
+//const int POS_1P_RANGE    =  POS_BFREQ_COUNT_SUSCEPT + POS_INT_RANGE; 	///< Positive range for Green functions and Single scale propagator
+const int POS_1P_RANGE =  8 * POS_INT_RANGE + POS_FFREQ_COUNT_SIG; 	///< Positive range for Green functions and Single scale propagator
 
 // ----- Output ranges
 

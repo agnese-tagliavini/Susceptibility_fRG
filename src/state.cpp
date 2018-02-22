@@ -59,7 +59,6 @@ dcomplex state_t::Sig( int w, int k, int s_in, int s_out ) const
    return gf_Sig()[w][k][s_in][s_out]; 
 }
 
-
 MatQN state_t::SigMat( int w, int k ) const
 {
    if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
@@ -67,7 +66,115 @@ MatQN state_t::SigMat( int w, int k ) const
    return Eigen::Map<const MatQN>( &(gf_Sig()[w][k][0][0]) );  
 }
 
+// --- VERTEX FUNCTION IN THE PURELY FERMIONIC NOTATION ---
 
+dcomplex state_t::vertx( int w1_in, int w2_in, int w1_out, int k1_in, int k2_in, int k1_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   return mom_phi_pp( w1_in, w2_in, w1_out, k1_in, k2_in, k1_out, s1_in, s2_in, s1_out, s2_out ) + 
+      mom_phi_ph( w1_in, w2_in, w1_out, k1_in, k2_in, k1_out, s1_in, s2_in, s1_out, s2_out ) +
+      mom_phi_xph( w1_in, w2_in, w1_out, k1_in, k2_in, k1_out, s1_in, s2_in, s1_out, s2_out ) +
+      vert_bare(s1_in,s2_in,s1_out,s2_out);
+}
+
+dcomplex state_t::mom_phi_pp( int w1_in, int w2_in, int w1_out, int k1_in, int k2_in, int k1_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   int W_pp = w1_in + w2_in + 1;
+   int w = w1_in - div2_ceil(W_pp);
+   int wp =  w1_out - div2_ceil(W_pp);
+
+   // we need the x and y component of the fermionic frequencies,
+   // the difference might be outside the 2pi range and we do not want to backfold
+   // because of the 0.5 factor in the form factors
+   double k1_in_x = get_kx(k1_in);
+   double k1_in_y = get_ky(k1_in);
+   double k2_in_x = get_kx(k2_in);
+   double k2_in_y = get_ky(k2_in);
+   double k1_out_x = get_kx(k1_out);
+   double k1_out_y = get_ky(k1_out);
+   
+   // K_pp should be backfolded by simultaneously including the translation (-/+) sign
+   int bf[2];// if this is  even -> backfolding with +sign
+             // 		  odd  -> backfolding wtih (-/+) sign
+   int K_pp =  add_k(k1_in, k2_in, bf);
+
+   for (int m=0; m< FFACTOR_COUNT; ++m)
+      for (int mp=0; mp< FFACTOR_COUNT; ++mp)
+	   val += conj(ffactor_mom[m](0.5*(k1_in_x-k2_in_x), 0.5*(k1_in_y-k2_in_y))) *
+	      	  ffactor_mom[mp](k1_out_x - 0.5*(k1_in_x+k2_in_x), k1_out_y - 0.5*(k1_in_y+k2_in_y)) *
+		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  phi_pp(W_pp, w, wp, K_pp, m, mp, s1_in, s2_in, s1_out, s2_out);
+   return val; 
+}
+
+dcomplex state_t::mom_phi_ph( int w1_in, int w2_in, int w1_out, int k1_in, int k2_in, int k1_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   int W_ph = w1_out - w1_in;
+   int w = w1_in + div2_floor(W_ph);
+   int wp =  w2_in - div2_ceil(W_ph);
+
+   // we need the x and y component of the fermionic frequencies,
+   // the difference might be outside the 2pi range and we do not want to backfold
+   // because of the 0.5 factor in the form factors
+   double k1_in_x = get_kx(k1_in);
+   double k1_in_y = get_ky(k1_in);
+   double k2_in_x = get_kx(k2_in);
+   double k2_in_y = get_ky(k2_in);
+   double k1_out_x = get_kx(k1_out);
+   double k1_out_y = get_ky(k1_out);
+   
+   // K_pp should be backfolded by simultaneously including the translation (-/+) sign
+   int bf[2];// if this is  even -> backfolding with +sign
+             // 		  odd  -> backfolding wtih (-/+) sign
+   int K_ph =  dif_k(k1_out, k1_in, bf);
+
+   for (int m=0; m< FFACTOR_COUNT; ++m)
+      for (int mp=0; mp< FFACTOR_COUNT; ++mp)
+	   val += conj(ffactor_mom[m](0.5*(k1_out_x+k1_in_x), 0.5*(k1_out_y+k1_in_y))) *
+	      	  ffactor_mom[mp](k2_in_x - 0.5*(k1_out_x-k1_in_x), k2_in_y - 0.5*(k1_out_y-k1_in_y) ) *
+		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  phi_ph(W_ph, w, wp, K_ph, m, mp, s1_in, s2_in, s1_out, s2_out);
+   return val; 
+}
+
+dcomplex state_t::mom_phi_xph( int w1_in, int w2_in, int w1_out, int k1_in, int k2_in, int k1_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+{
+   dcomplex val( 0.0, 0.0 );
+   
+   int W_xph = w2_in - w1_out;
+   int w = w1_in + div2_floor(W_xph);
+   int wp =  w2_in - div2_ceil(W_xph);
+
+   // we need the x and y component of the fermionic frequencies,
+   // the difference might be outside the 2pi range and we do not want to backfold
+   // because of the 0.5 factor in the form factors
+   double k1_in_x = get_kx(k1_in);
+   double k1_in_y = get_ky(k1_in);
+   double k2_in_x = get_kx(k2_in);
+   double k2_in_y = get_ky(k2_in);
+   double k1_out_x = get_kx(k1_out);
+   double k1_out_y = get_ky(k1_out);
+   
+   // K_pp should be backfolded by simultaneously including the translation (-/+) sign
+   int bf[2];// if this is even(0) -> backfolding with +sign
+             // 	   odd(1)  -> backfolding wtih (-/+) sign
+   int K_xph=  dif_k(k2_in, k1_out, bf);
+
+   // we need the x and y component of the fermionic frequencies,
+   // the difference might be outside the 2pi range and we do not want to backfold
+   // because of the 0.5 factor in the form factors
+
+   for (int m=0; m< FFACTOR_COUNT; ++m)
+      for (int mp=0; mp< FFACTOR_COUNT; ++mp)
+	   val += conj(ffactor_mom[m](k1_in_x + 0.5* (k2_in_x-k1_out_x), k1_in_y + 0.5*(k2_in_y-k1_out_y))) *
+	      	  ffactor_mom[mp](0.5*(k2_in_x+k1_out_x), 0.5*(k2_in_y+k1_out_y)) *
+		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  phi_xph(W_xph, w, wp, K_xph, m, mp, s1_in, s2_in, s1_out, s2_out);
+   return val; 
+}
 dcomplex state_t::vertx_pp( int W, int w_in, int w_out, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
       return phi_pp( W, w_in, w_out, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out ) + 

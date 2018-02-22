@@ -23,8 +23,12 @@ using boost::bind;
 
 // ALL SYMM
 
+symmetry_grp_t<dcomplex,4> rhs_t::symm_grp_sig( gf_1p_t(),{
+       cconj_sig
+      , rot_pi2_z_sig
+      , mirror_y_sig
+      } );
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_sc( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
-//symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_singl( gf_suscept_t(), { hmirror_suscept_pp, cconj_suscept_pp, timerev_suscept_pp, rot_pi2_z_suscept, mirror_y_suscept});
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_dens(  gf_suscept_t(),{ hmirror_suscept_ph, cconj_suscept_ph, timerev_suscept_ph,  rot_pi2_z_suscept, mirror_y_suscept}); 
 symmetry_grp_t<dcomplex,8> rhs_t::symm_grp_chi_mag(   gf_suscept_t(),{ hmirror_suscept_xph, cconj_suscept_xph, timerev_suscept_xph, rot_pi2_z_suscept, mirror_y_suscept}); 
 
@@ -71,6 +75,10 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
    gf_1p_mat_t Gvec( POS_1P_RANGE, FFT_DIM*FFT_DIM ); 
    
    Gvec.init( bind( &state_t::GMat, boost::cref(state_vec), _1 ) ); // Initialize big Green function vector 
+   
+   //gf_1p_mat_t Gvec_big( POS_1P_RANGE_SE, FFT_DIM*FFT_DIM ); 
+   
+   //Gvec_big.init( bind( &state_t::GMat, boost::cref(state_vec), _1 ) ); // Initialize big Green function vector 
 
    // Precalculate Green's functions in real space by FFT
    gf_1p_mat_real_t Gvec_real;
@@ -106,11 +114,13 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
    /*********************  Open MP parallelized RHS calculation  ********************/
 
    // --- Conventional flow
-   cout << " ... susceptibilities " << endl;
+   cout << " ... Self Energy SDE " << endl;
+   symm_grp_sig.init( dfdl.gf_Sig(), [&state_vec, &Gvec]( const idx_1p_t& idx ){ return eval_rhs_Sig( idx, state_vec, Gvec ); } );
+   
+   cout << " ... Susceptibilities " << endl;
+   
    cout << " ... SC " << endl;
    symm_grp_chi_sc.init( dfdl.gf_suscept_sc(), [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_sc( idx, state_vec, bubble_pp ); } ); 
-   //cout << " ... Singlet " << endl;
-   //symm_grp_chi_singl.init( dfdl.gf_suscept_s(),    [&state_vec, &bubble_pp]( const idx_suscept_t& idx ){ return eval_diag_suscept_s( idx, state_vec, bubble_pp ); } ); 
    cout << " ... Density " << endl;
    symm_grp_chi_dens.init( dfdl.gf_suscept_d(),     [&state_vec, &bubble_ph]( const idx_suscept_t& idx ){ return eval_diag_suscept_d( idx, state_vec, bubble_ph ); } ); 
    cout << " ... Magnetic " << endl;
@@ -134,6 +144,46 @@ void rhs_t::operator() ( const state_t& state_vec, state_t& dfdl )
 
 }
 
+
+// --- RHS DIAGRAMS ---
+
+dcomplex rhs_t::eval_rhs_Sig( const idx_1p_t& idx, const state_t& state_vec, const gf_1p_mat_t& Gvec )
+{
+   dcomplex val( 0.0, 0.0 );
+   //int count =0;
+   for( int s1 = 0; s1 < QN_COUNT; ++s1 )
+      for( int s1p = 0; s1p < QN_COUNT; ++s1p )
+         for( int s2 = 0; s2 < QN_COUNT; ++s2 )
+            for( int s2p = 0; s2p < QN_COUNT; ++s2p )
+               for( int s3 = 0; s3 < QN_COUNT; ++s3 )
+         	  for( int s3p = 0; s3p < QN_COUNT; ++s3p )
+   	 	     for( int k = 0; k < PATCH_COUNT; ++k )
+   	                for( int kp = 0; kp < PATCH_COUNT; ++kp )
+   	                   for( int w = -POS_INT_RANGE; w < POS_INT_RANGE; ++w )
+   	                      for( int wp = -POS_INT_RANGE; wp < POS_INT_RANGE; ++wp ){
+   	             	        //cout << "Inside the loop " << endl;	
+				int p1 = k_to_p_patch(k);
+   	             		int p3 = k_to_p_patch(kp);
+                     		int bf[2];// if this is even(0) -> backfolding with +sign
+   		     		int k_plus_kp = add_k(k, kp, bf); 
+   		     		int k_plus_kp_minus_kin = dif_k(k_plus_kp,idx(I1P::k), bf);
+   		     		int p2 = k_to_p_patch(k_plus_kp_minus_kin);  
+   	       	     	        //cout << "w= " << w << " wp= " << wp << endl;	
+				val += vert_bare(idx( I1P::s_in ), s3, s2p, s1p) * 
+   		                       Gvec[w][p1](s1,s1p) * Gvec[wp][p2](s2,s2p) *
+   			               Gvec[w+wp-idx(I1P::w)][p3](s3,s3p) * 
+   			               weight_vec_2d[w][wp] *
+   		                       (state_vec.vertx( w, wp, w+wp-idx(I1P::w), k, kp, k_plus_kp_minus_kin, s1, s2,idx( I1P::s_out ), s3p ));  
+				//count += 1;
+				//cout << "Count: "<< count << endl;
+	    }
+
+   val *= 1.0/BETA/BETA/PATCH_COUNT/PATCH_COUNT;
+   cout << "Sig val SDE : "  <<  -val  << endl;
+   cout << "Sig val: "  <<  gf_Sig_read[idx( I1P::w )][idx( I1P::k )][idx( I1P::s_in )][idx( I1P::s_out )] << endl; 
+   //return -val + gf_Sig_read[idx( I1P::w )][idx( I1P::k )][idx( I1P::s_in )][idx( I1P::s_out )];
+   return -val;
+}
 
 MatReal rhs_t::eval_Gvec_real( const idx_1p_mat_real_t& idx, const gf_1p_mat_t& Gvec, fftw_plan p_g)
 {

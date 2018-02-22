@@ -20,15 +20,16 @@ using namespace std;
 
 #ifdef READIN
 
-const int POS_FERM_PHI_IN = 12;
-const int POS_BOS_PHI_IN = 8;
+const int POS_FERM_PHI_IN = 6;
+const int POS_BOS_PHI_IN = 4;
 
-const int POS_FERM_P_IN = 16;
-const int POS_BOS_P_IN = 24;
+const int POS_FERM_P_IN = 8;
+const int POS_BOS_P_IN = 12;
 
-const int POS_BOS_CHI_IN = 256;
+const int POS_BOS_CHI_IN = 128;
 
-const int POS_SIG_IN = 16; 
+const int POS_SIG_IN = 8; 
+
 // Read the 2P reducible vertex on the form factor basis
 
 gf_phi_t gf_phi_pp_read( POS_BOS_PHI_IN, POS_FERM_PHI_IN); 
@@ -52,7 +53,7 @@ gf_1p_t gf_Sig_read(POS_SIG_IN);
 void read_exact()
 {
    using namespace H5;
-   H5File input_file( "/home/agnese/Coding/fRG_code/2D/fRGdyn/dat/U2_B5/RES_FUNC_SCHEMES/8LOOP/dat_U2_Beta5_PFCB256_HUB_OMFL_KAT_2LOOP_MLOOP_RESFUNC_NUMLOOP8_SECORR_SCHEME2_SU2_2D_4PISYMM_mkp2_ALLSYMM_WITHSE.h5", H5F_ACC_RDONLY );
+   H5File input_file( "/home/agnese/Coding/fRG_code/2D/fRGdyn/dat/dat_U2_Beta2_PFCB128_MKP2_HUB_OMFL_KAT_2LOOP_MLOOP_NUMLOOP1_SECORR_SU2_2D_4PISYMM_ALLSYMM_WITHSE.h5", H5F_ACC_RDONLY );
 
    cout << "Got file" << endl;
 

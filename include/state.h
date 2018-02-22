@@ -132,6 +132,7 @@ class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_ph
       /********************* Interfacing gf containers  ********************/
 
       dcomplex Sig( int w, int k, int s_in, int s_out ) const; 		///< Return self-energy value for a specific set of index
+      dcomplex Sig_out( int w, int k, int s_in, int s_out ) const; 		///< Return self-energy value for a specific set of index
 
       MatQN SigMat( int w, int k ) const; 				///< Return self-energy quantum number matrix for specific momentum and frequency given the current state vector
       
@@ -205,6 +206,11 @@ class state_t: public ReaK::arithmetic_tuple< gf_1p_t, gf_phi_t, gf_phi_t, gf_ph
       };
 
       static precalc precalculation;
+      
+      inline dcomplex Sig_out( const idx_1p_t& idx ) const
+      {
+         return Sig_out( idx(0), idx(1), idx(2), idx(3) ); 
+      }
       
       inline dcomplex vertx_pp( const idx_phi_t& idx ) const
       {

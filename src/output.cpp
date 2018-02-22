@@ -138,6 +138,14 @@ void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
    write( state_vec.gf_Sig(), group ); 
    write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
 }
+//void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
+//{
+//   Group group( file.createGroup("/Sig") );
+//   gf_1p_t gf_Sig_plot;
+//   gf_Sig_plot.init(bind(&state_t::Sig_out, boost::cref(state_vec), _1));
+//   write( gf_Sig_plot, group ); 
+//   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
+//}
 
 
 void write_vert_func( H5File& file, const state_t& state_vec )

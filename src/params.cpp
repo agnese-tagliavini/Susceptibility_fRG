@@ -15,7 +15,7 @@
 
 // -------- System independent 
 
-double BETA 	= 	5.0;  ///< INVERSE TEMPERATURE
+double BETA 	= 	2.0;  ///< INVERSE TEMPERATURE
 double UINT	=	2.0;	///< Bare interaction
 /*************MULTIORBITAL INTERACTION PARAMETERS***************
 double UINT = 2.75; ///< INTRAORBITALE BARE INTERACTION

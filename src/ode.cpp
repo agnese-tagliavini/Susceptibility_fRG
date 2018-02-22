@@ -82,8 +82,8 @@ int main ( int argc, char * argv[])
    state_vec.gf_tri_m().init( tri_init );
    
    state_vec.gf_asytri_sc().init( suscept_init_sc ); 
-   state_vec.gf_asytri_d().init( suscept_init_sc );
-   state_vec.gf_asytri_m().init( suscept_init_sc );
+   state_vec.gf_asytri_d().init(  suscept_init_sc );
+   state_vec.gf_asytri_m().init(  suscept_init_sc );
 
 
 /************************** CALC SUSCEPTIBILITIES **************************************/
@@ -130,7 +130,7 @@ int main ( int argc, char * argv[])
 
    FILE_NAME.append("_SU2"); 
    FILE_NAME.append("_2D");
-   FILE_NAME.append("_8LOOP");
+   FILE_NAME.append("_3LOOP");
 
    FILE_NAME.append("_OMFL.h5"); 
 
@@ -143,7 +143,7 @@ int main ( int argc, char * argv[])
    write_suscept_func( file, state_vec );
    write_tri_func( file, state_vec );
    write_asytri_func( file, state_vec );
-   //write_Sig_tensor( file, state_vec );
+   write_Sig_tensor( file, state_vec );
    //write_vert_func( file, state_vec ); 
    //write_phi_func( file, state_vec ); 
    //write_chi_func( file, state_vec ); 

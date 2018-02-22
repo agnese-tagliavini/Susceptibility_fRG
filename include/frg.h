@@ -12,7 +12,7 @@
 #include <def.h>
 #include <params.h>
 
-extern gf_1p_t gf_reSig_read; 
+extern gf_1p_t gf_Sig_read; 
 
 extern gf_phi_t gf_phi_pp_read;
 extern gf_phi_t gf_phi_ph_read;
