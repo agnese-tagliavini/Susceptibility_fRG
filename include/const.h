@@ -116,4 +116,8 @@ const int FFT_DIM = 16; 	///< Dimension of the FFT grid in every directions
 
 const int QN_COUNT = 1;						///< Amount of possible tuples of the discrete quantum numbers
 
+#ifdef MULTILOOP
+const int MULOOP_NUM = 6;
+const std::string MULOOP_NUM_STRING( std::to_string(MULOOP_NUM));
+#endif
 

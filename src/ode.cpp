@@ -97,7 +97,7 @@ int main ( int argc, char * argv[])
    // ------ Write output file
 
    H5std_string FILE_NAME("dat/suscept");
-   vector<pair<string, double>> fname_params = {{ "U", UINT }, { "Beta", BETA }, { "PFCB", POS_BFREQ_COUNT_CHI }}; //{ "PFC", POS_FFREQ_COUNT_P }}; //, { "Eps", EPS }};
+   vector<pair<string, double>> fname_params = {{ "U", UINT }, { "Beta", BETA }, { "PFCB", POS_BFREQ_COUNT_CHI}, {"MKP", MAX_KPOS} }; //{ "PFC", POS_FFREQ_COUNT_P }}; //, { "Eps", EPS }};
    for( auto parStr: fname_params )
    {
       FILE_NAME.append("_" + parStr.first );
@@ -127,12 +127,17 @@ int main ( int argc, char * argv[])
 #ifdef TWOLOOP
    FILE_NAME.append("_2LOOP"); 
 #endif
-
+#ifdef MULTILOOP
+      FILE_NAME.append("_MLOOP_NUMLOOP" + MULOOP_NUM_STRING);
+#endif
+#ifdef SE_CORR 
+         FILE_NAME.append("_SECORR");
+#endif
    FILE_NAME.append("_SU2"); 
    FILE_NAME.append("_2D");
-   FILE_NAME.append("_3LOOP");
-
-   FILE_NAME.append("_OMFL.h5"); 
+   FILE_NAME.append("_4PISYMM");
+   FILE_NAME.append("_ALLSYMM");
+   FILE_NAME.append("_WITHSE.h5"); 
 
    //const H5std_string	FILE_NAME("dat/dat.h5");
    H5File file( FILE_NAME, H5F_ACC_TRUNC );
