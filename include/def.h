@@ -54,7 +54,7 @@ class gf_1p_mat_t : public gf< MatQN, 2 > 			///< Matrix-valued container type f
    {}
       INSERT_COPY_AND_ASSIGN(gf_1p_mat_t)
 }; 
-using idx_1p_mat_t = gf_1p_mat_t::idx_t;   
+using idx_1p_mat_t = gf_1p_mat_t::idx_t;  
 
 class gf_1p_mat_real_t : public gf< MatReal, 3 > 			///< Matrix-valued container type for one-particle correlation functions
 {
@@ -68,17 +68,41 @@ class gf_1p_mat_real_t : public gf< MatReal, 3 > 			///< Matrix-valued container
 }; 
 using idx_1p_mat_real_t = gf_1p_mat_real_t::idx_t;   
 
+class gf_1p_real_t : public gf< dcomplex, 4 > 			///< Matrix-valued container type for one-particle correlation functions
+{
+   public:
+      using base_t = gf< dcomplex, 4 >; 
+
+      gf_1p_real_t( int pos_freq_count_= POS_1P_RANGE ):
+	 base_t( boost::extents[ffreq(pos_freq_count_)][FFT_DIM*FFT_DIM][QN_COUNT][QN_COUNT] ) 
+   {}
+      INSERT_COPY_AND_ASSIGN(gf_1p_real_t)
+}; 
+using idx_1p_real_t = gf_1p_real_t::idx_t;   
+
 class gf_bubble_mat_t : public gf< MatPatch, 8 > 			///< Matrix-valued container type for one-particle correlation functions
 {
    public:
       using base_t = gf< MatPatch, 8 >; 
 
-      gf_bubble_mat_t( int pos_bfreq_count_= POS_BFREQ_COUNT_SUSCEPT, int pos_freq_count_= POS_INT_RANGE+POS_BFREQ_COUNT_SUSCEPT/2):
+      gf_bubble_mat_t( int pos_bfreq_count_= POS_BFREQ_COUNT_CHI, int pos_freq_count_= POS_INT_RANGE+POS_BFREQ_COUNT_CHI/2):
 	 base_t( boost::extents[bfreq(pos_bfreq_count_)][ffreq(pos_freq_count_)][FFACTOR_COUNT][FFACTOR_COUNT][QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] ) 
    {}
       INSERT_COPY_AND_ASSIGN(gf_bubble_mat_t)
 }; 
 using idx_bubble_mat_t = gf_bubble_mat_t::idx_t;   
+
+class gf_bubble_t : public gf< dcomplex, 9 > 			///< Matrix-valued container type for one-particle correlation functions
+{
+   public:
+      using base_t = gf< dcomplex, 9 >; 
+
+      gf_bubble_t( int pos_bfreq_count_= POS_BFREQ_COUNT_CHI, int pos_freq_count_= POS_INT_RANGE+POS_BFREQ_COUNT_CHI/2):
+	 base_t( boost::extents[bfreq(pos_bfreq_count_)][ffreq(pos_freq_count_)][PATCH_COUNT][FFACTOR_COUNT][FFACTOR_COUNT][QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] ) 
+   {}
+      INSERT_COPY_AND_ASSIGN(gf_bubble_t)
+}; 
+using idx_bubble_t = gf_bubble_t::idx_t;   
 
 enum class I1P{ w, k, s_in, s_out }; 
 class gf_1p_t : public  gf< dcomplex, 4 > 		///< Container type for one-particle correlation functions, holds dcomplex
@@ -114,8 +138,8 @@ class gf_phi_t : public gf< dcomplex, 10 > 		///< Container type for two-particl
    public:
       using base_t = gf< dcomplex, 10 >;
 
-      gf_phi_t( int pos_bfreq_count_ = POS_BFREQ_COUNT_PHI, int pos_freq_count_ = POS_FFREQ_COUNT_PHI ):
-	 base_t( boost::extents[bfreq(pos_bfreq_count_)][ffreq(pos_freq_count_)][ffreq(pos_freq_count_)]
+      gf_phi_t(int pos_breq_count_ = POS_BFREQ_COUNT_PHI, int pos_freq_count_ = POS_FFREQ_COUNT_PHI  ):
+	 base_t( boost::extents[bfreq(pos_breq_count_)][ffreq(pos_freq_count_)][ffreq(pos_freq_count_)]
 	       [PATCH_COUNT][FFACTOR_COUNT][FFACTOR_COUNT]
 	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
    {}
@@ -129,8 +153,8 @@ class gf_P_t : public gf< dcomplex, 8 > 		///< Container type for two-particle c
    public:
       using base_t = gf< dcomplex, 8 >; 
 
-      gf_P_t( int pos_bfreq_count_ = POS_BFREQ_COUNT_P,int pos_freq_count_ = POS_FFREQ_COUNT_P ):
-	 base_t( boost::extents[bfreq(pos_bfreq_count_)][ffreq(pos_freq_count_)]
+      gf_P_t(int pos_breq_count_ = POS_BFREQ_COUNT_P, int pos_freq_count_ = POS_FFREQ_COUNT_P  ):
+	 base_t( boost::extents[bfreq(pos_breq_count_)][ffreq(pos_freq_count_)]
 	       [PATCH_COUNT][FFACTOR_COUNT]
 	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
    {}
@@ -144,22 +168,39 @@ class gf_chi_t : public gf< dcomplex, 6 > 		///< Container type for two-particle
    public:
       using base_t = gf< dcomplex, 6 >; 
 
-      gf_chi_t( int pos_bfreq_count_ = POS_BFREQ_COUNT_CHI ):
-	 base_t( boost::extents[bfreq(pos_bfreq_count_)]
+      gf_chi_t( int pos_bfreq_count = POS_BFREQ_COUNT_CHI ):
+	 base_t( boost::extents[bfreq(pos_bfreq_count)]
 	       [PATCH_COUNT][QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
    {}
       INSERT_COPY_AND_ASSIGN(gf_chi_t)
 }; 
 using idx_chi_t = gf_chi_t::idx_t; 
 
+// Class for the RESPONSE FUNCTIONS: TRILEG and SUSCEPTIBILITY
+
+enum class IATRI{ W, K, n, s1_in, s2_in, s1_out, s2_out }; 
+class gf_asytri_t : public gf< dcomplex, 7 > 		///< Container type for two-particle correlation functions, holds dcomplex
+{
+   public:
+      using base_t = gf< dcomplex, 7 >; 
+
+      gf_asytri_t():
+	 base_t( boost::extents[bfreq(POS_BFREQ_COUNT_ATRI)]
+	       [PATCH_COUNT][FFACTOR_COUNT]
+	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
+   {}
+      INSERT_COPY_AND_ASSIGN(gf_asytri_t)
+}; 
+using idx_asytri_t = gf_asytri_t::idx_t; 
+
 enum class ITRI{ W, w, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out }; 
-class gf_tri_t : public gf< dcomplex, 9 > 		///< Container type for two-particle correlation functions
+class gf_tri_t : public gf< dcomplex, 9 > 		///< Container type for two-particle correlation functions, holds dcomplex
 {
    public:
       using base_t = gf< dcomplex, 9 >; 
 
-      gf_tri_t( int pos_bfreq_count = POS_BFREQ_COUNT_TRI, int pos_ffreq_count = POS_FFREQ_COUNT_TRI ):
-	 base_t( boost::extents[bfreq(pos_bfreq_count)][ffreq(pos_ffreq_count)]
+      gf_tri_t():
+	 base_t( boost::extents[bfreq(POS_BFREQ_COUNT_TRI)][ffreq(POS_FFREQ_COUNT_TRI)]
 	       [PATCH_COUNT][FFACTOR_COUNT][FFACTOR_COUNT]
 	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
    {}
@@ -168,19 +209,32 @@ class gf_tri_t : public gf< dcomplex, 9 > 		///< Container type for two-particle
 using idx_tri_t = gf_tri_t::idx_t; 
 
 enum class ISUSC{ W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out }; 
-class gf_suscept_t : public gf< dcomplex, 8 > 		///< Container type for two-particle correlation functions
+class gf_susc_t : public gf< dcomplex, 8 > 		///< Container type for two-particle correlation functions
 {
    public:
       using base_t = gf< dcomplex, 8 >; 
 
-      gf_suscept_t( int pos_bfreq_count = POS_BFREQ_COUNT_SUSCEPT ):
+      gf_susc_t( int pos_bfreq_count = POS_BFREQ_COUNT_SUSC ):
 	 base_t( boost::extents[bfreq(pos_bfreq_count)]
 	       [PATCH_COUNT][FFACTOR_COUNT][FFACTOR_COUNT]
 	       [QN_COUNT][QN_COUNT][QN_COUNT][QN_COUNT] )
    {}
-      INSERT_COPY_AND_ASSIGN(gf_suscept_t)
+      INSERT_COPY_AND_ASSIGN(gf_susc_t)
 }; 
-using idx_suscept_t = gf_suscept_t::idx_t; 
+using idx_susc_t = gf_susc_t::idx_t; 
+
+enum class ISUSC_POSTPROC{ K }; 
+class gf_susc_postproc_t : public gf< dcomplex, 1 > 		///< Container type for two-particle correlation functions
+{
+   public:
+      using base_t = gf< dcomplex, 1 >; 
+
+      gf_susc_postproc_t( ):
+	 base_t( boost::extents[3] )
+   {}
+      INSERT_COPY_AND_ASSIGN(gf_susc_postproc_t)
+}; 
+using idx_susc_postproc_t = gf_susc_postproc_t::idx_t; 
 
 // Class for the bare vertex in the form factors + band basis -> only needed for input to the frg flow 
 enum class VERT_BARE_FF{n_in, n_out, s1_in, s2_in, s1_out, s2_out }; 
@@ -254,13 +308,13 @@ class gf_k_4MAXKPOS_matrix_t: public gf< double, 1 > 		///< Container type for t
 {
    public:
       using base_t = gf< double, 1>; 
+
       gf_k_4MAXKPOS_matrix_t( ):
-      base_t( boost::extents[4*MAX_KPOS])
+	 base_t( boost::extents[4*MAX_KPOS])
    {}
       INSERT_COPY_AND_ASSIGN(gf_k_4MAXKPOS_matrix_t)
 }; 
 using idx_k_4MAXKPOS_matrix_t = gf_k_4MAXKPOS_matrix_t::idx_t; 
-
 
 enum class FFT_FxF_WEIGHT{ R, m, n }; 
 class gf_fft_fxf_weight_t : public gf< dcomplex, 3 > 		///< Container type for two-particle correlation functions

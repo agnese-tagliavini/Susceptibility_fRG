@@ -73,17 +73,17 @@ int main ( int argc, char * argv[])
    state_vec.gf_chi_ph().init( chi_init_ph ); 
    state_vec.gf_chi_xph().init( chi_init_xph );
 
-   state_vec.gf_suscept_sc().init( suscept_init_sc ); 
-   state_vec.gf_suscept_d().init( suscept_init_d );
-   state_vec.gf_suscept_m().init( suscept_init_m );
+   state_vec.gf_susc_sc().init( susc_init ); 
+   state_vec.gf_susc_d().init( susc_init );
+   state_vec.gf_susc_m().init( susc_init );
    
    state_vec.gf_tri_sc().init( tri_init ); 
    state_vec.gf_tri_d().init( tri_init );
    state_vec.gf_tri_m().init( tri_init );
    
-   state_vec.gf_asytri_sc().init( suscept_init_sc ); 
-   state_vec.gf_asytri_d().init(  suscept_init_sc );
-   state_vec.gf_asytri_m().init(  suscept_init_sc );
+   state_vec.gf_asytri_sc().init( asytri_init ); 
+   state_vec.gf_asytri_d().init(  asytri_init );
+   state_vec.gf_asytri_m().init(  asytri_init );
 
 
 /************************** CALC SUSCEPTIBILITIES **************************************/
@@ -120,6 +120,12 @@ int main ( int argc, char * argv[])
    FILE_NAME.append("_HUB"); 
 #endif
 
+#ifdef LOCAL
+   FILE_NAME.append("_LOC");
+#elif FIRST_NN
+   FILE_NAME.append("_SD");
+#endif
+
 #ifdef KATANIN
    FILE_NAME.append("_KAT"); 
 #endif
@@ -127,9 +133,11 @@ int main ( int argc, char * argv[])
 #ifdef TWOLOOP
    FILE_NAME.append("_2LOOP"); 
 #endif
+
 #ifdef MULTILOOP
       FILE_NAME.append("_MLOOP_NUMLOOP" + MULOOP_NUM_STRING);
 #endif
+
 #ifdef SE_CORR 
          FILE_NAME.append("_SECORR");
 #endif
@@ -137,7 +145,8 @@ int main ( int argc, char * argv[])
    FILE_NAME.append("_2D");
    FILE_NAME.append("_4PISYMM");
    FILE_NAME.append("_ALLSYMM");
-   FILE_NAME.append("_WITHSE.h5"); 
+   FILE_NAME.append("_WITHSE_INTFL.h5"); 
+   //FILE_NAME.append("_INTFL.h5"); 
 
    //const H5std_string	FILE_NAME("dat/dat.h5");
    H5File file( FILE_NAME, H5F_ACC_TRUNC );
@@ -145,10 +154,14 @@ int main ( int argc, char * argv[])
    init( file );		
    write_config( file );		
    write_params( file );
-   write_suscept_func( file, state_vec );
+   write_susc_func( file, state_vec );
    write_tri_func( file, state_vec );
    write_asytri_func( file, state_vec );
-   write_Sig_tensor( file, state_vec );
+   //write_Sig_old_tensor( file, state_vec );
+   //write_Sig_tensor( file, state_vec );
+   //write_Sig_ph_tensor( file, state_vec );
+   //write_Sig_pp_tensor( file, state_vec );
+   //write_Sig_xph_tensor( file, state_vec );
    //write_vert_func( file, state_vec ); 
    //write_phi_func( file, state_vec ); 
    //write_chi_func( file, state_vec ); 

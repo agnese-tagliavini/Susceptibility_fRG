@@ -115,6 +115,7 @@ class K_Grid : public std::vector<std::tuple<double, double>>
       static std::tuple<int, int> get_indices(double kx, double ky);
       static std::tuple<int, int> get_indices(unsigned int patch);     //kx and ky starting from -MAX_KPOS+1 (corresponding to physical -pi+delta)
       static std::tuple<int, int> get_indices_enum(unsigned int patch);//kx and ky starting from 0 (but corresponding to -pi+delta)
+
       gf_k_4MAXKPOS_matrix_t generate_cos_matrix();
       gf_k_4MAXKPOS_matrix_t generate_sin_matrix();
 
@@ -171,7 +172,6 @@ class K_Grid : public std::vector<std::tuple<double, double>>
       unsigned int get_mirror_k_bfx(unsigned int p); 	// axis of the rotation, n indicates "angle" (n=2 is pi, n=4 is pi/2, p patch to be rotated )
       unsigned int get_mirror_k_bfy(unsigned int p); 	// axis of the rotation, n indicates "angle" (n=2 is pi, n=4 is pi/2, p patch to be rotated )
       unsigned int get_mirror_diagonal_k(unsigned int p); 	// (x<->y )
-//      
 #endif
       unsigned int patch_count;
 };    
@@ -179,22 +179,22 @@ class K_Grid : public std::vector<std::tuple<double, double>>
 #ifdef UNIFORM_GRID
 inline int add_k( int k1, int k2, int bf[2] )
 {
-   bf[0] = int(abs(K_Grid::add_k_bfx_matrix[k1][k2]))%2;
-   bf[1] = int(abs(K_Grid::add_k_bfy_matrix[k1][k2]))%2;
+   bf[0] = int(abs(double(K_Grid::add_k_bfx_matrix[k1][k2])))%2;
+   bf[1] = int(abs(double(K_Grid::add_k_bfy_matrix[k1][k2])))%2;
    return K_Grid::add_k_matrix[k1][k2]; 
 }
 
 inline int dif_k( int k1, int k2, int bf[2] )
 {
-   bf[0] = int(abs(K_Grid::dif_k_bfx_matrix[k1][k2]))%2;
-   bf[1] = int(abs(K_Grid::dif_k_bfy_matrix[k1][k2]))%2;
+   bf[0] = int(abs(double(K_Grid::dif_k_bfx_matrix[k1][k2])))%2;
+   bf[1] = int(abs(double(K_Grid::dif_k_bfy_matrix[k1][k2])))%2;
    return K_Grid::dif_k_matrix[k1][k2];
 }
 
 inline int neg_k( int k, int bf[2])
 {
-   bf[0]= int(abs(K_Grid::dif_k_bfx_matrix[K_Grid::patch_origin][k]))%2 ;
-   bf[1]= int(abs(K_Grid::dif_k_bfy_matrix[K_Grid::patch_origin][k]))%2 ;
+   bf[0]= int(abs(double(K_Grid::dif_k_bfx_matrix[K_Grid::patch_origin][k])))%2 ;
+   bf[1]= int(abs(double(K_Grid::dif_k_bfy_matrix[K_Grid::patch_origin][k])))%2 ;
    return K_Grid::dif_k_matrix[K_Grid::patch_origin][k];
 }
 
@@ -301,7 +301,6 @@ inline unsigned int div2_floor_patch( int k )
 }
 
 // returns the half a step in the k-grid if k is "odd" and 0 if k is "eveevenn"
-
 inline double mod_patch_x( int k )
 {
    return  ( (std::get<0>(K_Grid::get_indices(k))) + 100000) %2 ;
@@ -321,9 +320,43 @@ inline double sin_k(int kx)
 {
    return K_Grid::SIN[(kx+40*MAX_KPOS)%(4*MAX_KPOS)];
 }
-
 #endif
 
+//#ifdef SIMPLE_PATCH
+//
+//inline int add_k( int k1, int k2 )
+//{
+//   return K_Grid::add_k_matrix[k1][k2]; 
+//}
+//
+//inline int dif_k( int k1, int k2 )
+//{
+//   return K_Grid::dif_k_matrix[k2][k1]; // To take the transpose of our matrix (TODO:it should have been defined differently):e.g 0-1= dif_k(0,1) = dif_k_arr[1][0]
+//}
+//
+//inline int neg_k( int k )
+//{
+//   return K_Grid::neg_k_matrix[k]; 
+//}
+//
+//inline double get_kx( unsigned int k)
+//{
+//   return std::get<0>(K_Grid()[k]);
+//}
+//
+//inline double get_ky( unsigned int k)
+//{
+//   return std::get<1>(K_Grid()[k]);
+//}
+//
+//
+//inline int get_k_patch(double kx, double ky)
+//{
+//   for(int i=0; i< PATCH_COUNT; ++i)
+//      if(cos(2.*(kx - get_kx(i)))+cos(2.*(ky - get_ky(i))) >= 0)
+//	    return i;
+//}
+//#endif
 //TODO: Now only local ffactors are considered(s-wave) so we have just one ffactor function
 //      When we wat to extend to next nearest neighbors the ffactor_mom list will be extended accordignly with the next-nearest neighbor cosidered and the new ffcator function in ka space must be defined in private and pushed back to fill fffact_mom (maybe with if conditions on the number of next-nearest neighbors)...in that case a fuction to get the size of ffactor_mom has to be included in the class
 //TODO: Include the all the rotation matrices for the form factors considered
@@ -341,13 +374,27 @@ class F_factors : public std::vector<std::function<double(double,double)>>
       static constexpr int FF_rot_sign_pi2_z_arr[FFACTOR_COUNT]={ 1 };
       static constexpr int FF_mirror_sign_y_arr[FFACTOR_COUNT]={ 1 };
       static constexpr int FF_mirror_sign_diagonal_arr[FFACTOR_COUNT]={ 1 };
+//#elif defined FIRST_NN
+//      static constexpr int FF_rot_pi2_z_arr[FFACTOR_COUNT] 		= { 0, 2, 1, 4, 3};
+//      static constexpr int FF_mirror_y_arr[FFACTOR_COUNT] 		= { 0, 1, 2, 3, 4};
+//      static constexpr int FF_mirror_diagonal_arr[FFACTOR_COUNT] 	= { 0, 2, 1, 4, 3};
+//      static constexpr int FF_rot_sign_pi2_z_arr[FFACTOR_COUNT] 	= { 1, 1, 1,-1, 1};
+//      static constexpr int FF_mirror_sign_y_arr[FFACTOR_COUNT] 		= { 1, 1, 1,-1, 1};
+//      static constexpr int FF_mirror_sign_diagonal_arr[FFACTOR_COUNT] 	= { 1, 1, 1, 1, 1};
 #elif defined FIRST_NN
-      static constexpr int FF_rot_pi2_z_arr[FFACTOR_COUNT] 		= { 0, 2, 1, 4, 3};
-      static constexpr int FF_mirror_y_arr[FFACTOR_COUNT] 		= { 0, 1, 2, 3, 4};
-      static constexpr int FF_mirror_diagonal_arr[FFACTOR_COUNT] 	= { 0, 2, 1, 4, 3};
-      static constexpr int FF_rot_sign_pi2_z_arr[FFACTOR_COUNT] 	= { 1, 1, 1,-1, 1};
-      static constexpr int FF_mirror_sign_y_arr[FFACTOR_COUNT] 		= { 1, 1, 1,-1, 1};
-      static constexpr int FF_mirror_sign_diagonal_arr[FFACTOR_COUNT] 	= { 1, 1, 1, 1, 1};
+      static constexpr int FF_rot_pi2_z_arr[FFACTOR_COUNT]              = { 0, 2, 1};
+      static constexpr int FF_mirror_y_arr[FFACTOR_COUNT]               = { 0, 1, 2};
+      static constexpr int FF_mirror_diagonal_arr[FFACTOR_COUNT]        = { 0, 2, 1};
+      static constexpr int FF_rot_sign_pi2_z_arr[FFACTOR_COUNT]         = { 1, 1, 1};
+      static constexpr int FF_mirror_sign_y_arr[FFACTOR_COUNT]          = { 1, 1, 1};
+      static constexpr int FF_mirror_sign_diagonal_arr[FFACTOR_COUNT]   = { 1, 1, 1};
+#elif defined SECOND_NN
+      static constexpr int FF_rot_pi2_z_arr[FFACTOR_COUNT] 		= { 0, 2, 1, 4, 3, 6, 5, 8, 7};
+      static constexpr int FF_mirror_y_arr[FFACTOR_COUNT] 		= { 0, 1, 2, 3, 4, 6, 5, 8, 7};
+      static constexpr int FF_mirror_diagonal_arr[FFACTOR_COUNT] 	= { 0, 2, 1, 4, 3, 5, 6, 7, 8};
+      static constexpr int FF_rot_sign_pi2_z_arr[FFACTOR_COUNT] 	= { 1, 1, 1,-1, 1, 1, 1, 1,-1};
+      static constexpr int FF_mirror_sign_y_arr[FFACTOR_COUNT] 		= { 1, 1, 1,-1, 1, 1, 1,-1,-1};
+      static constexpr int FF_mirror_sign_diagonal_arr[FFACTOR_COUNT] 	= { 1, 1, 1, 1, 1, 1, 1, 1,-1};
 #endif
 	      unsigned int get_ffactor_count();
        private:

@@ -51,6 +51,21 @@ state_t::precalc state_t::precalculation;
 
 
 
+dcomplex state_t::Sig_old( int w, int k, int s_in, int s_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return 0.0; 
+
+   return gf_Sig_old()[w][k][s_in][s_out]; 
+}
+
+MatQN state_t::SigMat_old( int w, int k ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return MatQN::Zero(); 
+   return Eigen::Map<const MatQN>( &(gf_Sig_old()[w][k][0][0]) );  
+}
+
 dcomplex state_t::Sig( int w, int k, int s_in, int s_out ) const
 {
    if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
@@ -65,7 +80,50 @@ MatQN state_t::SigMat( int w, int k ) const
       return MatQN::Zero(); 
    return Eigen::Map<const MatQN>( &(gf_Sig()[w][k][0][0]) );  
 }
+dcomplex state_t::Sig_ph( int w, int k, int s_in, int s_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return 0.0; 
 
+   return gf_Sig_ph()[w][k][s_in][s_out]; 
+}
+
+MatQN state_t::SigMat_ph( int w, int k ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return MatQN::Zero(); 
+   return Eigen::Map<const MatQN>( &(gf_Sig_ph()[w][k][0][0]) );  
+}
+
+dcomplex state_t::Sig_pp( int w, int k, int s_in, int s_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return 0.0; 
+
+   return gf_Sig_pp()[w][k][s_in][s_out]; 
+}
+
+MatQN state_t::SigMat_pp( int w, int k ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return MatQN::Zero(); 
+   return Eigen::Map<const MatQN>( &(gf_Sig_pp()[w][k][0][0]) );  
+}
+
+dcomplex state_t::Sig_xph( int w, int k, int s_in, int s_out ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return 0.0; 
+
+   return gf_Sig_xph()[w][k][s_in][s_out]; 
+}
+
+MatQN state_t::SigMat_xph( int w, int k ) const
+{
+   if ( w < -POS_FFREQ_COUNT_SIG || w > POS_FFREQ_COUNT_SIG - 1 ) 
+      return MatQN::Zero(); 
+   return Eigen::Map<const MatQN>( &(gf_Sig_xph()[w][k][0][0]) );  
+}
 // --- VERTEX FUNCTION IN THE PURELY FERMIONIC NOTATION ---
 
 dcomplex state_t::vertx( int w1_in, int w2_in, int w1_out, int k1_in, int k2_in, int k1_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
@@ -103,7 +161,7 @@ dcomplex state_t::mom_phi_pp( int w1_in, int w2_in, int w1_out, int k1_in, int k
       for (int mp=0; mp< FFACTOR_COUNT; ++mp)
 	   val += conj(ffactor_mom[m](0.5*(k1_in_x-k2_in_x), 0.5*(k1_in_y-k2_in_y))) *
 	      	  ffactor_mom[mp](k1_out_x - 0.5*(k1_in_x+k2_in_x), k1_out_y - 0.5*(k1_in_y+k2_in_y)) *
-		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  double(1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * double(1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
 		  phi_pp(W_pp, w, wp, K_pp, m, mp, s1_in, s2_in, s1_out, s2_out);
    return val; 
 }
@@ -135,7 +193,7 @@ dcomplex state_t::mom_phi_ph( int w1_in, int w2_in, int w1_out, int k1_in, int k
       for (int mp=0; mp< FFACTOR_COUNT; ++mp)
 	   val += conj(ffactor_mom[m](0.5*(k1_out_x+k1_in_x), 0.5*(k1_out_y+k1_in_y))) *
 	      	  ffactor_mom[mp](k2_in_x - 0.5*(k1_out_x-k1_in_x), k2_in_y - 0.5*(k1_out_y-k1_in_y) ) *
-		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  double(1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * double(1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
 		  phi_ph(W_ph, w, wp, K_ph, m, mp, s1_in, s2_in, s1_out, s2_out);
    return val; 
 }
@@ -171,7 +229,7 @@ dcomplex state_t::mom_phi_xph( int w1_in, int w2_in, int w1_out, int k1_in, int 
       for (int mp=0; mp< FFACTOR_COUNT; ++mp)
 	   val += conj(ffactor_mom[m](k1_in_x + 0.5* (k2_in_x-k1_out_x), k1_in_y + 0.5*(k2_in_y-k1_out_y))) *
 	      	  ffactor_mom[mp](0.5*(k2_in_x+k1_out_x), 0.5*(k2_in_y+k1_out_y)) *
-		  (1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * (1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
+		  double(1 - (1- translate_2pi_x(m) * translate_2pi_x(mp)) * bf[0]) * double(1 - (1- translate_2pi_y(m) * translate_2pi_y(mp)) * bf[1]) *  
 		  phi_xph(W_xph, w, wp, K_xph, m, mp, s1_in, s2_in, s1_out, s2_out);
    return val; 
 }
@@ -388,43 +446,35 @@ MatQN state_t::GMat( const idx_1p_mat_t& idx) const
 
 /******************************************** SUSCEPTIBILITIES *************************************************************************************/
 
-dcomplex state_t::suscept_sc( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::susc_sc( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-   if ( W < -POS_BFREQ_COUNT_SUSCEPT || W > POS_BFREQ_COUNT_SUSCEPT ) 
+   if ( W < -POS_BFREQ_COUNT_SUSC || W > POS_BFREQ_COUNT_SUSC ) 
       return 0.0; 
 
-   return gf_suscept_sc()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_susc_sc()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
 
-//dcomplex state_t::suscept_s( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
-//{
-//   if ( W < -POS_BFREQ_COUNT_SUSCEPT || W > POS_BFREQ_COUNT_SUSCEPT ) 
-//      return 0.0; 
-//
-//   return gf_suscept_s()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
-//}
-
-dcomplex state_t::suscept_d( int W, int K,int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::susc_d( int W, int K,int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-   if ( W < -POS_BFREQ_COUNT_SUSCEPT || W > POS_BFREQ_COUNT_SUSCEPT ) 
+   if ( W < -POS_BFREQ_COUNT_SUSC || W > POS_BFREQ_COUNT_SUSC ) 
       return 0.0; 
 
-   return gf_suscept_d()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_susc_d()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
 
-dcomplex state_t::suscept_m( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::susc_m( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-   if ( W < -POS_BFREQ_COUNT_SUSCEPT || W > POS_BFREQ_COUNT_SUSCEPT ) 
+   if ( W < -POS_BFREQ_COUNT_SUSC || W > POS_BFREQ_COUNT_SUSC ) 
       return 0.0; 
 
-   return gf_suscept_m()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_susc_m()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
 
 dcomplex state_t::tri_sc( int W, int w, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
         W < -POS_BFREQ_COUNT_TRI || W > POS_BFREQ_COUNT_TRI )
-       return  tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_sc(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
+       return  tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + double(n_out == 0) * asytri_sc(W, K, n_in, s1_in, s2_in, s1_out, s2_out );
 
    return gf_tri_sc()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
@@ -434,7 +484,7 @@ dcomplex state_t::tri_d( int W, int w, int K, int n_in, int n_out, int s1_in, in
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
        W < -POS_BFREQ_COUNT_TRI  || W > POS_BFREQ_COUNT_TRI )
-       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_d(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out );
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + double(n_out == 0) * asytri_d(W, K, n_in, s1_in, s2_in, s1_out, s2_out );
  
    return gf_tri_d()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
@@ -443,34 +493,34 @@ dcomplex state_t::tri_m( int W, int w, int K, int n_in, int n_out, int s1_in, in
 {
    if ( w < -POS_FFREQ_COUNT_TRI || w > POS_FFREQ_COUNT_TRI - 1 ||
         W < -POS_BFREQ_COUNT_TRI || W > POS_BFREQ_COUNT_TRI )
-       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + asytri_m(W, K, n_in, n_out, s1_in, s2_in, s1_out, s2_out ); 
+       return tri_bare(n_in, n_out, s1_in, s2_in, s1_out, s2_out) + double(n_out == 0) * asytri_m(W, K, n_in, s1_in, s2_in, s1_out, s2_out ); 
 
    return gf_tri_m()[W][w][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
 }
 
-dcomplex state_t::asytri_sc( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::asytri_sc( int W, int K, int n, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-  if (W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+  if (W < -POS_BFREQ_COUNT_ATRI || W > POS_BFREQ_COUNT_ATRI )
     return 0.0;
 
-   return gf_asytri_sc()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_asytri_sc()[W][K][n][s1_in][s2_in][s1_out][s2_out]; 
 }
 
 
-dcomplex state_t::asytri_d( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::asytri_d( int W, int K, int n, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-     if (W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+     if (W < -POS_BFREQ_COUNT_ATRI || W > POS_BFREQ_COUNT_ATRI )
        return 0.0;
      
-   return gf_asytri_d()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_asytri_d()[W][K][n][s1_in][s2_in][s1_out][s2_out]; 
 }
 
-dcomplex state_t::asytri_m( int W, int K, int n_in, int n_out, int s1_in, int s2_in, int s1_out, int s2_out ) const
+dcomplex state_t::asytri_m( int W, int K, int n, int s1_in, int s2_in, int s1_out, int s2_out ) const
 {
-   if ( W < -POS_BFREQ_COUNT_CHI || W > POS_BFREQ_COUNT_CHI )
+   if ( W < -POS_BFREQ_COUNT_ATRI || W > POS_BFREQ_COUNT_ATRI )
      return 0.0;
 
-   return gf_asytri_m()[W][K][n_in][n_out][s1_in][s2_in][s1_out][s2_out]; 
+   return gf_asytri_m()[W][K][n][s1_in][s2_in][s1_out][s2_out]; 
 }
 
 //PROJECTION FUNCTIONS

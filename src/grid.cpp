@@ -537,8 +537,8 @@ F_factors::F_factors()
 	   push_back([](double kx, double ky){return 1./sqrt(4*PI*PI);}); //s-wave}      
            push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*cos(kx);});
            push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*cos(ky);});
-           push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*sin(kx);});
-           push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*sin(ky);});
+           //push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*sin(kx);});
+           //push_back([](double kx, double ky){return 1./sqrt(2*PI*PI)*sin(ky);});
     }
         ffactor_count = size();
     }
@@ -552,9 +552,13 @@ unsigned int F_factors::get_ffactor_count()
 #ifdef LOCAL
 int F_factors::parity_arr[FFACTOR_COUNT] = {1};
 int F_factors::translate_2pi_arr[FFACTOR_COUNT][2]= { 1, 1} ;
-#elif defined FIRST_NN
-int F_factors::parity_arr[FFACTOR_COUNT] = {1,1,1,-1,-1};
-int F_factors::translate_2pi_arr[FFACTOR_COUNT][2] = { { 1, 1}, {-1, 1 },  { 1,-1}, {-1, 1}, { 1,-1} }; 
+//#elif defined FIRST_NN
+//int F_factors::parity_arr[FFACTOR_COUNT] = {1,1,1,-1,-1};
+//int F_factors::translate_2pi_arr[FFACTOR_COUNT][2] = { { 1, 1}, {-1, 1 },  { 1,-1}, {-1, 1}, { 1,-1} }; 
+#elif defined FIRST_NN // USED FOR THE s+d form-factors
+int F_factors::parity_arr[FFACTOR_COUNT] = {1,1,1};
+int F_factors::translate_2pi_arr[FFACTOR_COUNT][2] = { { 1, 1}, {-1, 1 },  { 1,-1} };
+
 #endif
 
 constexpr int F_factors::FF_rot_pi2_z_arr[FFACTOR_COUNT]; 
@@ -578,8 +582,8 @@ F_factors_real::F_factors_real()
 	   push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,0,0},{0,1,0},{0,0,0}}}); // s-wave
 	   push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,1./sqrt(2.),0},{0,0,0},{0,1./sqrt(2.),0}}}); // cos x
 	   push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,0,0},{1./sqrt(2.),0,1./sqrt(2.)},{0,0,0}}}); // cos y
-	   push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,-I/sqrt(2.),0},{0,0,0},{0,I/sqrt(2.),0}}}); // sin x
-	   push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,0,0},{-I/sqrt(2.),0,I/sqrt(2.)},{0,0,0}}}); // sin y
+	   //push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,-I/sqrt(2.),0},{0,0,0},{0,I/sqrt(2.),0}}}); // sin x
+	   //push_back(array<array<dcomplex,FFREAL_DIM>,FFREAL_DIM>{{{0,0,0},{-I/sqrt(2.),0,I/sqrt(2.)},{0,0,0}}}); // sin y
     }
 #endif
         ffactor_real_count = size();

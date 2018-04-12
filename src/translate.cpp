@@ -28,9 +28,9 @@ idx_chi_t iP_to_ichi( const idx_P_t& idx )
    return  idx_chi_t( { idx( IP::W ), idx( IP::K ), idx( IP::s1_in ), idx( IP::s2_in ), idx( IP::s1_out ), idx( IP::s2_out )} ); 
 }
 
-idx_tri_t iasy_to_itri( const idx_suscept_t& idx )
+idx_tri_t iasy_to_itri( const idx_asytri_t& idx )
 {
-   return  idx_tri_t( { idx( ISUSC::W ), 5*BFREQ_COUNT_CHI, idx( ISUSC::K ), idx( ISUSC::n_in ), idx( ISUSC::n_out ), idx( ISUSC::s1_in ), idx( ISUSC::s2_in ), idx( ISUSC::s1_out ), idx( ISUSC::s2_out )} ); 
-}
+  return  idx_tri_t( { idx( IATRI::W ), 5*BFREQ_COUNT_CHI, idx( IATRI::K ), idx(IATRI::n), 0, idx( IATRI::s1_in ), idx( IATRI::s2_in ), idx( IATRI::s1_out ), idx( IATRI::s2_out )} ); 
 
+}
 

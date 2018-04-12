@@ -98,15 +98,15 @@ vector<pair<string, double>> par_lst =
 
 }
 
-void write_suscept_func( H5File& file, const state_t& state_vec )
+void write_susc_func( H5File& file, const state_t& state_vec )
 {
    Group group( file.createGroup("/susc_func") );
 
-   write( state_vec.gf_suscept_sc(), group, "_SC" ); 
-   write( state_vec.gf_suscept_d(), group, "_D" ); 
-   write( state_vec.gf_suscept_m(), group, "_M" ); 
+   write( state_vec.gf_susc_sc(), group, "_SC" ); 
+   write( state_vec.gf_susc_d(), group, "_D" ); 
+   write( state_vec.gf_susc_m(), group, "_M" ); 
 
-   write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
+   write( Bos_Grid( POS_BFREQ_COUNT_SUSC, 2.0*PI / BETA ), group );
 }
 
 void write_tri_func( H5File& file, const state_t& state_vec )
@@ -129,7 +129,14 @@ void write_asytri_func( H5File& file, const state_t& state_vec )
    write( state_vec.gf_asytri_d(), group, "_D" ); 
    write( state_vec.gf_asytri_m(), group, "_M" ); 
 
-   write( Bos_Grid( POS_BFREQ_COUNT_SUSCEPT, 2.0*PI / BETA ), group );
+   write( Bos_Grid( POS_BFREQ_COUNT_ATRI, 2.0*PI / BETA ), group );
+}
+
+void write_Sig_old_tensor( H5::H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/Sig_old") );
+   write( state_vec.gf_Sig_old(), group ); 
+   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
 }
 
 void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
@@ -138,15 +145,27 @@ void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
    write( state_vec.gf_Sig(), group ); 
    write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
 }
-//void write_Sig_tensor( H5::H5File& file, const state_t& state_vec )
-//{
-//   Group group( file.createGroup("/Sig") );
-//   gf_1p_t gf_Sig_plot;
-//   gf_Sig_plot.init(bind(&state_t::Sig_out, boost::cref(state_vec), _1));
-//   write( gf_Sig_plot, group ); 
-//   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
-//}
 
+void write_Sig_ph_tensor( H5::H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/Sig_ph") );
+   write( state_vec.gf_Sig_ph(), group ); 
+   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
+}
+
+void write_Sig_pp_tensor( H5::H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/Sig_pp") );
+   write( state_vec.gf_Sig_pp(), group ); 
+   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
+}
+
+void write_Sig_xph_tensor( H5::H5File& file, const state_t& state_vec )
+{
+   Group group( file.createGroup("/Sig_xph") );
+   write( state_vec.gf_Sig_xph(), group ); 
+   write( F_Grid( POS_FFREQ_COUNT_SIG, 2.0*PI / BETA ), group );
+}
 
 void write_vert_func( H5File& file, const state_t& state_vec )
 {

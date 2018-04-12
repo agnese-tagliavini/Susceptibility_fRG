@@ -53,7 +53,7 @@ gf_1p_t gf_Sig_read(POS_SIG_IN);
 void read_exact()
 {
    using namespace H5;
-   H5File input_file( "/home/agnese/Coding/fRG_code/2D/fRGdyn/dat/dat_U2_Beta2_PFCB128_MKP2_HUB_OMFL_KAT_2LOOP_MLOOP_NUMLOOP1_SECORR_SU2_2D_4PISYMM_ALLSYMM_WITHSE.h5", H5F_ACC_RDONLY );
+   H5File input_file( "/home/agnese/Coding/fRG_code/2D/fRGdyn/dat/U2_B2/PAPER_FLOW/dat_U2_Beta2_PFCB128_MKP4_HUB_OMFL_KAT_2LOOP_MLOOP_NUMLOOP1_SECORR_SU2_2D_4PISYMM_ALLSYMMSDFF.h5", H5F_ACC_RDONLY );
 
    cout << "Got file" << endl;
 
@@ -330,17 +330,12 @@ dcomplex chi_init_xph( const idx_chi_t& idx ) // inital Karrasch functions in Na
    return 0.0; // vanishes for weak coupling flows
 }
 
-dcomplex suscept_init_sc( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
+dcomplex susc_init( const idx_susc_t& idx ) // inital Karrasch functions in Nambu basis
 {
    return 0.0; // vanishes for weak coupling flows
 }
 
-dcomplex suscept_init_d( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
-{
-   return 0.0; // vanishes for weak coupling flows
-}
-
-dcomplex suscept_init_m( const idx_suscept_t& idx ) // inital Karrasch functions in Nambu basis
+dcomplex asytri_init( const idx_asytri_t& idx ) // inital Karrasch functions in Nambu basis
 {
    return 0.0; // vanishes for weak coupling flows
 }

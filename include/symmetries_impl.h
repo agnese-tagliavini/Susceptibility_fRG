@@ -127,29 +127,29 @@ operation spin_symm( idx_2p_t& idx_not )
 
 
 
-template<typename notation>
-operation rot_pi2_z( idx_2p_t& idx_not )
-{
-   idx_2p_t idx = to_ferm<notation>( idx_not ); 
-   rot_pi2_z( idx( I2P::k1_in ) );
-   rot_pi2_z( idx( I2P::k2_in ) );
-   rot_pi2_z( idx( I2P::k1_out ) );
-
-   idx_not = from_ferm<notation>( idx ); 
-   return operation( false, false );
-}
-
-
-
-template<typename notation>
-operation mirror_y( idx_2p_t& idx_not )
-{
-   idx_2p_t idx = to_ferm<notation>( idx_not ); 
-   mirror_y( idx( I2P::k1_in ) );
-   mirror_y( idx( I2P::k2_in ) );
-   mirror_y( idx( I2P::k1_out ) );
-
-   idx_not = from_ferm<notation>( idx ); 
-   return operation( false, false );
-}
-
+//template<typename notation>
+//operation rot_pi2_z( idx_2p_t& idx_not )
+//{
+//   idx_2p_t idx = to_ferm<notation>( idx_not ); 
+//   rot_pi2_z( idx( I2P::k1_in ) );
+//   rot_pi2_z( idx( I2P::k2_in ) );
+//   rot_pi2_z( idx( I2P::k1_out ) );
+//
+//   idx_not = from_ferm<notation>( idx ); 
+//   return operation( false, false );
+//}
+//
+//
+//
+//template<typename notation>
+//operation mirror_y( idx_2p_t& idx_not )
+//{
+//   idx_2p_t idx = to_ferm<notation>( idx_not ); 
+//   mirror_y( idx( I2P::k1_in ) );
+//   mirror_y( idx( I2P::k2_in ) );
+//   mirror_y( idx( I2P::k1_out ) );
+//
+//   idx_not = from_ferm<notation>( idx ); 
+//   return operation( false, false );
+//}
+//

@@ -1,4 +1,4 @@
-
+ 
 /************************************************************************************************//**
  *  		
  * 	file: 		symmetries_lattice.cpp
@@ -91,37 +91,6 @@ operation mirror_y_chi( idx_chi_t& idx )
    return operation( false, false );
 }
 
-// ---- suscept ---
-operation rot_pi2_z_suscept( idx_suscept_t& idx )
-{
-   bool sign = (1- FF_rot_sign_pi2_z( idx(2) ) * FF_rot_sign_pi2_z( idx(3) ))/2;
-   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
-   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
-   int bf[2] = {0,0};
-   rot_pi2_z( idx(1), bf );
-   idx(2)= FF_rot_pi2_z( idx(2) );
-   idx(3)= FF_rot_pi2_z( idx(3) );
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
-
-   return operation(sign^(bf_sign_x^bf_sign_y), false );
-}
-   
-
-operation mirror_y_suscept( idx_suscept_t& idx )
-{
-   bool sign = (1- FF_mirror_sign_y( idx(2) ) * FF_mirror_sign_y( idx(3) ))/2;
-   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
-   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
-   int bf[2] = {0,0};
-   mirror_y( idx(1), bf );
-   idx(2)= FF_mirror_y( idx(2) );
-   idx(3)= FF_mirror_y( idx(3) );
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
-
-   return operation(sign^(bf_sign_x^bf_sign_y), false );
-}
 
 // ---- Sig ----
 
@@ -214,5 +183,103 @@ operation mirror_diagonal_projmat( idx_proj_matrix_t& idx )
    idx(5) = FF_mirror_diagonal( idx(5) );
 
    return operation( sign ^((bf_sign_x^bf_sign_y)^(bf_sign_p_x^bf_sign_p_y)), false );
+}
+
+// -- Trileg
+
+operation rot_pi2_z_tri( idx_tri_t& idx )
+{
+   bool sign = (1- FF_rot_sign_pi2_z( idx(3) ) * FF_rot_sign_pi2_z( idx(4) ))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   rot_pi2_z( idx(2), bf );
+   idx(3)= FF_rot_pi2_z( idx(3) );
+   idx(4)= FF_rot_pi2_z( idx(4) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
+}
+   
+
+operation mirror_y_tri( idx_tri_t& idx )
+{
+   bool sign = (1- FF_mirror_sign_y( idx(3) ) * FF_mirror_sign_y( idx(4) ))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   mirror_y( idx(2), bf );
+   idx(3)= FF_mirror_y( idx(3) );
+   idx(4)= FF_mirror_y( idx(4) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
+}
+
+// -- Asymptotics Trileg
+
+operation rot_pi2_z_asytri( idx_asytri_t& idx )
+{
+   bool sign = (1- FF_rot_sign_pi2_z( idx(2) )  )/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   rot_pi2_z( idx(1), bf );
+   idx(2)= FF_rot_pi2_z( idx(2) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
+}
+   
+
+operation mirror_y_asytri( idx_asytri_t& idx )
+{
+   bool sign = (1- FF_mirror_sign_y( idx(2) ) )/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   mirror_y( idx(1), bf );
+   idx(2)= FF_mirror_y( idx(2) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
+}
+
+
+// -- Susc
+
+operation rot_pi2_z_susc( idx_susc_t& idx )
+{
+   bool sign = (1- FF_rot_sign_pi2_z( idx(2) ) * FF_rot_sign_pi2_z( idx(3) ))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
+   int bf[2] = {0,0};
+   rot_pi2_z( idx(1), bf );
+   idx(2)= FF_rot_pi2_z( idx(2) );
+   idx(3)= FF_rot_pi2_z( idx(3) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
+}
+   
+
+operation mirror_y_susc( idx_susc_t& idx )
+{
+   bool sign = (1- FF_mirror_sign_y( idx(2) ) * FF_mirror_sign_y( idx(3) ))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
+   int bf[2] = {0,0};
+   mirror_y( idx(1), bf );
+   idx(2)= FF_mirror_y( idx(2) );
+   idx(3)= FF_mirror_y( idx(3) );
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+
+   return operation(sign^(bf_sign_x^bf_sign_y), false );
 }
 

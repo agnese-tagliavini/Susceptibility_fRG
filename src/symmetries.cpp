@@ -175,6 +175,111 @@ operation timerev_phi_xph( idx_phi_t& idx )
    return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
 
+// -- Phi LEFT
+
+operation hmirror_phi_pp_L( idx_phi_t& idx )
+{
+   bool sign= (1 - (Parity(idx(4))*Parity(idx(5))))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1; 
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) =-idx(2)-1-abs(idx(0)%2);
+   idx(3) *= 1;
+   idx(4) *= 1;
+   idx(5) *= 1;
+   swap(idx(6),idx(7));
+   swap(idx(8),idx(9));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y) , false ); 	// true=1 is multiplying a factor -1 to the matrix element
+   										// if Parity*Parity==-1 -> first = true -> factor -1
+   										// elseif Parity*Parity==1 -> first = false -> no factor
+}
+
+operation cconj_timerev_phi_pp_L( idx_phi_t& idx ) //notation changed but fine = cconj*hmirror in 3D_patch
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1; 
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) =-idx(2)-1-abs(idx(0)%2);
+   idx(3) *=1;
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+
+
+operation cconj_phi_ph_L( idx_phi_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *=  1;
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) =-idx(2)-1-abs(idx(0)%2);
+   idx(3) = neg_k(idx(3),bf);
+   swap(idx(6),idx(8));
+   swap(idx(7),idx(9));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+
+operation timerev_phi_ph_L( idx_phi_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(3) = neg_k(idx(3),bf);
+   swap(idx(6),idx(8));
+   swap(idx(7),idx(9));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation hmirror_timerev_phi_xph_L( idx_phi_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(3) = neg_k(idx(3),bf);
+   swap(idx(6),idx(9));
+   swap(idx(7),idx(8));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation hmirror_cconj_phi_xph_L( idx_phi_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(4))*translate_2pi_x(idx(5))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(4))*translate_2pi_y(idx(5))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1;
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) =-idx(2)-1-abs(idx(0)%2);
+   idx(3) = neg_k(idx(3),bf);
+   swap(idx(6),idx(9));
+   swap(idx(7),idx(8));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
 // --- P
 operation hmirror_P_pp( idx_P_t& idx )
 {
@@ -442,11 +547,215 @@ operation hmirror_timerev_ph( idx_bubble_mat_t& idx)
 
 /**************************************************************
  *
- * 		SYMMETRIES SUSCEPTIBILITIES
+ * 		SYMMETRIES: RESPONSE FUNCTIONS 
  *
  *************************************************************/
 
-operation hmirror_suscept_pp( idx_suscept_t& idx )
+// --- Trileg
+operation hmirror_tri_sc( idx_tri_t& idx )
+{
+   bool sign= (1 - (Parity(idx(3))*Parity(idx(4))))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1; 
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) *= 1;
+   idx(3) *= 1;
+   idx(4) *= 1;
+   swap(idx(5),idx(6));
+   swap(idx(7),idx(8));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation cconj_timerev_tri_sc( idx_tri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1; 
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) *= 1;
+   idx(3) *= 1;
+   idx(4) *= 1;
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); // Quantum numbers don't change after cconj and time reversal
+}
+
+operation timerev_tri_d( idx_tri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(1) *= 1;
+   idx(2) =neg_k(idx(2),bf);
+   idx(3) *= 1;
+   idx(4) *= 1;
+   swap(idx(5),idx(7));
+   swap(idx(6),idx(8));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation cconj_tri_d( idx_tri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *=  1;
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) = neg_k(idx(2),bf);
+   idx(3) *= 1;
+   idx(4) *= 1;
+   swap(idx(5),idx(7));
+   swap(idx(6),idx(8));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+operation hmirror_cconj_tri_m( idx_tri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1;
+   idx(1) =-idx(1)-1-abs(idx(0)%2);
+   idx(2) = neg_k(idx(2),bf);
+   idx(3) *= 1;
+   idx(4) *= 1;
+   swap(idx(5),idx(8));
+   swap(idx(6),idx(7));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+operation hmirror_timerev_tri_m( idx_tri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(3))*translate_2pi_x(idx(4))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(3))*translate_2pi_y(idx(4))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(1) *= 1;
+   idx(2) = neg_k(idx(2),bf);
+   idx(3) *= 1;
+   idx(4) *= 1;
+   swap(idx(5),idx(8));
+   swap(idx(6),idx(7));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+// --- Asymptotics Trileg
+operation hmirror_asytri_sc( idx_asytri_t& idx )
+{
+   bool sign= (1 - (Parity(idx(2))))/2;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1; 
+   idx(1) *= 1;
+   idx(2) *= 1;
+   swap(idx(3),idx(4));
+   swap(idx(5),idx(6));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation cconj_timerev_asytri_sc( idx_asytri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1; 
+   idx(1) *= 1;
+   idx(2) *= 1;
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); // Quantum numbers don't change after cconj and time reversal
+}
+
+operation timerev_asytri_d( idx_asytri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(1) =neg_k(idx(1),bf);
+   idx(2) *= 1;
+   swap(idx(3),idx(5));
+   swap(idx(4),idx(6));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation cconj_asytri_d( idx_asytri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *=  1;
+   idx(1) = neg_k(idx(1),bf);
+   idx(2) *= 1;
+   swap(idx(3),idx(5));
+   swap(idx(4),idx(6));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+operation hmirror_cconj_asytri_m( idx_asytri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= 1;
+   idx(1) = neg_k(idx(1),bf);
+   idx(2) *= 1;
+   swap(idx(3),idx(6));
+   swap(idx(4),idx(5));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), true ); 
+}
+
+operation hmirror_timerev_asytri_m( idx_asytri_t& idx )
+{
+   bool sign = false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(1) = neg_k(idx(1),bf);
+   idx(2) *= 1;
+   swap(idx(3),idx(6));
+   swap(idx(4),idx(5));
+   bf_sign_x &= bool(bf[0]);
+   bf_sign_y &= bool(bf[1]);
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+//// --- Susceptibility
+//
+operation hmirror_susc_sc( idx_susc_t& idx )
 {
    bool sign= (1 - (Parity(idx(2))*Parity(idx(3))))/2;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
@@ -458,137 +767,115 @@ operation hmirror_suscept_pp( idx_suscept_t& idx )
    idx(3) *= 1;
    swap(idx(4),idx(5));
    swap(idx(6),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
-   return operation( sign^(bf_sign_x^bf_sign_y) , false ); 	// true=1 is multiplying a factor -1 to the matrix element
-   										// if Parity*Parity==-1 -> first = true -> factor -1
-   										// elseif Parity*Parity==1 -> first = false -> no factor
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
-
-operation hmirror_suscept_ph( idx_suscept_t& idx )
+operation hmirror_susc_d( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *= -1;
-   idx(1) =neg_k(idx(1),bf);
+   idx(1) =neg_k(idx(1), bf);
    swap(idx(2),idx(3));
    swap(idx(4),idx(5));
    swap(idx(6),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
-   return operation( sign^(bf_sign_x^bf_sign_y) , false ); 	// true=1 is multiplying a factor -1 to the matrix element
-   										// if Parity*Parity==-1 -> first = true -> factor -1
-   										// elseif Parity*Parity==1 -> first = false -> no factor
-}
-
-operation hmirror_suscept_xph( idx_suscept_t& idx )
-{
-   bool sign = false;
-   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
-   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
-   int bf[2] = {0,0};
-   idx(0) *= -1;
-   idx(1) = neg_k(idx(1),bf);
-   swap(idx(2),idx(3));
-   swap(idx(4),idx(5));
-   swap(idx(6),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
 
-operation cconj_suscept_pp( idx_suscept_t& idx ) //notation changed but fine = cconj*hmirror in 3D_patch
+operation hmirror_susc_m( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
+   bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
+   bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
+   int bf[2] = {0,0};
+   idx(0) *= -1;
+   idx(1) = neg_k(idx(1), bf);
+   swap(idx(2),idx(3));
+   swap(idx(4),idx(5));
+   swap(idx(6),idx(7));
+   return operation( sign^(bf_sign_x^bf_sign_y), false ); 
+}
+
+operation cconj_susc_sc( idx_susc_t& idx )
+{
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *= -1; 
-   idx(1) *=1;
+   idx(1) *=  1;
    swap(idx(2),idx(3));
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), true ); 
 }
 
-operation cconj_suscept_ph( idx_suscept_t& idx )
+operation cconj_susc_d( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *=  1;
-   idx(1) = neg_k(idx(1),bf);
+   idx(1)  =  neg_k(idx(1), bf);
+   idx(2) *= 1;
+   idx(3) *= 1;
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), true ); 
 }
 
-operation cconj_suscept_xph( idx_suscept_t& idx )
+operation cconj_susc_m( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *= -1;
-   swap(idx(2),idx(3));  
+   swap(idx(2),idx(3));
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), true ); 
 }
 
-operation timerev_suscept_pp( idx_suscept_t& idx )
+operation timerev_susc_sc( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *= 1; 
-   idx(1) *=1;
+   idx(1) *= 1;
    swap(idx(2),idx(3));
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
 
-operation timerev_suscept_ph( idx_suscept_t& idx )
+operation timerev_susc_d( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
    idx(0) *= -1;
-   idx(1) = neg_k(idx(1),bf);
+   idx(1) = neg_k(idx(1), bf);
+   idx(2) *= 1;
+   idx(3) *= 1;
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
-
-
-operation timerev_suscept_xph( idx_suscept_t& idx )
+operation timerev_susc_m( idx_susc_t& idx )
 {
-   bool sign = false;
+   bool sign= false;
    bool bf_sign_x = (1 - (translate_2pi_x(idx(2))*translate_2pi_x(idx(3))))/2;
    bool bf_sign_y = (1 - (translate_2pi_y(idx(2))*translate_2pi_y(idx(3))))/2;
    int bf[2] = {0,0};
-   idx(0) *= 1;
    swap(idx(2),idx(3));
    swap(idx(4),idx(6));
    swap(idx(5),idx(7));
-   bf_sign_x &= bool(bf[0]);
-   bf_sign_y &= bool(bf[1]);
    return operation( sign^(bf_sign_x^bf_sign_y), false ); 
 }
 
